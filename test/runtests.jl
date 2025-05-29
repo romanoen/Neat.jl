@@ -2,5 +2,5 @@ using MyPackage
 using Test
 
 @testset "MyPackage.jl" begin
-    # Write your tests here.
+    include("sampleTest.jl") # <--- include tests in runtests.jl
 end

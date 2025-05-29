@@ -3,5 +3,9 @@ uuid = "ca4da33f-684f-4f20-8ad8-db35abfaaa8c"
 authors = ["Musa Ozcetin <musa.oezcetin@campus.tu-berlin.de>"]
 version = "1.0.0-DEV"
 
+[deps]
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+
 [compat]
+CSV = "0.10"
 julia = "1.11"
