@@ -2,5 +2,9 @@ using MyPackage
 using Test
 
 @testset "MyPackage.jl" begin
-    include("sampleTest.jl") # <--- include tests in runtests.jl
+        include("forward_pass_test.jl")
+        include("evaluate_fitness_test.jl")
+        include("create_genome_test.jl")
+        include("types_test.jl")
 end
+
