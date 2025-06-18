@@ -139,8 +139,13 @@ Applies all mutation operators to a genome.
 """
 function mutate(genome::Genome)
     mutate_weights!(genome)
-    add_connection!(genome)
-    return add_node!(genome)
+    if rand() < 0.05   #example value
+        add_connection!(genome)
+    end
+
+    if rand() < 0.03 #example value
+        add_node!(genome)
+    end
 end
 
 end
