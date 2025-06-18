@@ -2,6 +2,7 @@ module CreateGenome
 
 using ..Types
 
+
 export create_genome
 """
     create_genome(id, num_inputs, num_outputs) → Genome
@@ -20,6 +21,13 @@ each with a random weight.
 A `Genome(id, nodes, connections)` where `nodes` is a `Dict{Int,Node}` of all
 input/output nodes, and `connections` is a `Dict{(Int,Int),Connection}` with
 two initial connections (innovation 1 and 2).
+
+Network Structure:
+
+2 input neurons
+1 output neuron
+
+No hidden layer
 """
 function create_genome(id::Int, num_inputs::Int, num_outputs::Int)
     nodes = Dict{Int,Node}()

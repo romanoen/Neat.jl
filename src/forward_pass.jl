@@ -31,7 +31,7 @@ function forward_pass(genome::Genome, input::Vector{Float64})::Float64
             end
         end
     end
-    return 1.0 / (1.0 + exp(-output_sum)) # apply sigmoid (because why not)
+    return 1.0 / (1.0 + exp(-output_sum)) # apply sigmoid
 end
 
 end
