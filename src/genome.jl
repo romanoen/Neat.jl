@@ -13,7 +13,7 @@ struct Node
     nodetype::Symbol # input, hidden or output
 end
 
-struct Connection
+mutable struct Connection
     in_node::Int
     out_node::Int
     weight::Float64
@@ -21,7 +21,7 @@ struct Connection
     innovation_number::Int
 end
 
-struct Genome
+mutable struct Genome
     id::Int
     nodes::Dict{Int,Node}
     connections::Dict{Tuple{Int,Int},Connection}
