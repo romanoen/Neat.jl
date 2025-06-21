@@ -1,5 +1,5 @@
 using Test
-using MyPackage
+using Neat
 
 @testset "evaluate_fitness" begin
     # Manually define a minimal genome for XOR

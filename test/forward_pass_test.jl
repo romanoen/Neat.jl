@@ -1,5 +1,5 @@
 using Test
-using MyPackage 
+using Neat 
 
 @testset "forward_pass" begin
     # Define dummy nodes and connections

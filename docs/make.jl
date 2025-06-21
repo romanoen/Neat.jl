@@ -1,4 +1,4 @@
-using MyPackage
+using Neat
 using Documenter
 
 DocMeta.setdocmeta!(MyPackage, :DocTestSetup, :(using MyPackage); recursive=true)

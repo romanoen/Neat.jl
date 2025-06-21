@@ -3,7 +3,7 @@
 using Pkg
 Pkg.activate("../")
 
-import MyPackage: create_genome, evaluate_fitness, initialize_population, mutate
+import Neat: create_genome, evaluate_fitness, initialize_population, mutate
 
 # Test create_genome
 println("=== Test create_genome ===")

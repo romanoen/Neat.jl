@@ -1,5 +1,5 @@
-# src/mypackage.jl
-module MyPackage
+# src/Neat.jl
+module Neat
 
 include("genome.jl")
 include("create_genome.jl")

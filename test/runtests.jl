@@ -1,7 +1,7 @@
-using MyPackage
+using Neat
 using Test
 
-@testset "MyPackage.jl" begin
+@testset "Neat.jl" begin
         include("forward_pass_test.jl")
         include("evaluate_fitness_test.jl")
         include("create_genome_test.jl")

@@ -1,5 +1,5 @@
 using Test
-using MyPackage
+using Neat
 
 @testset "Types - Node, Connection, Genome" begin
     # Test Node

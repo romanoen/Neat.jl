@@ -1,5 +1,5 @@
 using Test
-using MyPackage
+using Neat
 
 @testset "create_genome" begin
     genome = create_genome(1, 2, 1)
