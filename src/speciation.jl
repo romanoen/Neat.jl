@@ -5,12 +5,13 @@ using ..Types
 export compatibility_distance
 export assign_species!
 export adjust_fitness!
+export compute_offspring_counts
 
 """
     compatibility_distance(g1::Genome, g2::Genome;
                            c1=1.0, c2=1.0, c3=0.4) → Float64
 
-Compute the compatibility distance between two genomes `g1` and `g2`.
+Compute the compatibility distance between two genomes `g1` and `g2` (similarity between genomes using innovation numbers and weights).
 Uses NEAT's distance formula:
 
     δ = (c1 * E / N) + (c2 * D / N) + (c3 * W)
@@ -82,6 +83,8 @@ end
     assign_species!(population::Vector{Genome}, species_list::Vector{Vector{Genome}};
                     threshold=3.0)
 
+Groups genomes into species based on compatibility.
+
 Assign each genome in the population to a species in `species_list` based on
 compatibility distance. A genome is added to the first species where distance
 to the representative is below the threshold. If no such species exists, a new
@@ -123,6 +126,8 @@ end
 """
     adjust_fitness!(species_list::Vector{Vector{Genome}})
 
+Applies fitness sharing to scale each genome’s fitness relative to its species size.
+
 Modifies each genome's fitness value in-place by applying NEAT-style fitness sharing:
 - Divides each genome's fitness by the number of members in its species.
 
@@ -139,6 +144,44 @@ function adjust_fitness!(species_list::Vector{Vector{Genome}})
             genome.fitness /= s_size
         end
     end
+end
+
+"""
+    compute_offspring_counts(species_list::Vector{Vector{Genome}}, population_size::Int) → Vector{Int}
+
+Calculates how many offspring each species is allowed to produce based on the
+sum of adjusted fitness values in each species, relative to the population's total.
+
+# Arguments
+- `species_list`: List of species (each is a list of genomes)
+- `population_size`: Total number of offspring to allocate
+
+# Returns
+- `Vector{Int}`: A list of offspring counts per species (same order)
+"""
+function compute_offspring_counts(species_list::Vector{Vector{Genome}}, population_size::Int)::Vector{Int}
+    species_fitness_totals = [sum(g.fitness for g in s) for s in species_list]
+    total_fitness = sum(species_fitness_totals)
+
+    if total_fitness == 0
+        # Avoid divide-by-zero: assign equal offspring
+        return fill(div(population_size, length(species_list)), length(species_list))
+    end
+
+    # Proportionally allocate offspring
+    counts = [
+        round(Int, (fit / total_fitness) * population_size)
+        for fit in species_fitness_totals
+    ]
+
+    # Adjust rounding to make sure total exactly matches population_size
+    diff = population_size - sum(counts)
+    for i in 1:abs(diff)
+        idx = mod1(i, length(counts))
+        counts[idx] += sign(diff)
+    end
+
+    return counts
 end
 
 end

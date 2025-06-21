@@ -34,5 +34,7 @@ export Genome,
     crossover,
     compatibility_distance,
     assign_species!,
-    adjust_fitness!
+    adjust_fitness!,
+    compute_offspring_counts
+    
 end # module
