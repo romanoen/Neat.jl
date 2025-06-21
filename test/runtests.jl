@@ -6,5 +6,7 @@ using Test
         include("evaluate_fitness_test.jl")
         include("create_genome_test.jl")
         include("types_test.jl")
+        include("crossover_test.jl")
+
 end
 

@@ -8,6 +8,7 @@ include("fitness.jl")
 include("create_population.jl")
 include("innovation.jl")
 include("mutation.jl")
+include("crossover.jl")
 
 using .Types
 using .CreateGenome
@@ -16,6 +17,7 @@ using .Fitness
 using .Population
 using .Innovation
 using .Mutation
+using .Crossover
 
 export Genome,
     Node,
@@ -25,7 +27,8 @@ export Genome,
     evaluate_fitness,
     initialize_population,
     next_innovation_number,
-    reset_innovation_counter!
-    mutate
+    reset_innovation_counter!,
+    mutate,
+    crossover
 
 end # module
