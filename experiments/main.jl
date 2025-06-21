@@ -16,7 +16,9 @@ println("Number of Connections: ", length(genome.connections))
 # Test evaluate_fitness
 println("\n=== Test evaluate_fitness ===")
 fitness_before = evaluate_fitness(genome)
+genome.fitness = fitness_before
 println("Fitness before mutation: ", round(fitness_before, digits=4))
+
 
 # Test mutate
 println("\n=== Test mutate ===")
@@ -29,6 +31,7 @@ println("After mutation:")
 println("  Nodes: $(length(genome.nodes)), Connections: $(length(genome.connections))")
 
 fitness_after = evaluate_fitness(genome)
+genome.fitness = fitness_after
 println("Fitness after mutation: ", round(fitness_after, digits=4))
 
 # Test initialize_population

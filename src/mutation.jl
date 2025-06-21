@@ -1,6 +1,7 @@
 module Mutation
 
 using ..Types
+using ..Innovation
 using Random
 
 export mutate_weights!, mutate, add_connection!, add_node!
@@ -69,8 +70,7 @@ function add_connection!(genome::Genome)
             continue
         end
 
-        innovation_number =
-            maximum([c.innovation_number for c in values(genome.connections)]) + 1
+        innovation_number = next_innovation_number()
         genome.connections[key] = Connection(                               #create new connection
             in_node.id,
             out_node.id,
@@ -121,14 +121,14 @@ function add_node!(genome::Genome)
     new_node_id = maximum(existing_ids) + 1
     genome.nodes[new_node_id] = Node(new_node_id, :hidden)      #create new genome
 
-    new_innov = maximum([c.innovation_number for c in values(genome.connections)]) + 1
+    new_innov1 = next_innovation_number()
     genome.connections[(old_conn.in_node, new_node_id)] = Connection(
-        old_conn.in_node, new_node_id, 1.0, true, new_innov
+        old_conn.in_node, new_node_id, 1.0, true, new_innov1
     ) #new connection old_node_a -> new node
 
-    new_innov += 1
+    new_innov2 = next_innovation_number()
     return genome.connections[(new_node_id, old_conn.out_node)] = Connection(
-        new_node_id, old_conn.out_node, old_conn.weight, true, new_innov
+        new_node_id, old_conn.out_node, old_conn.weight, true, new_innov2
     ) #new connection new node -> old_node_b
 end
 

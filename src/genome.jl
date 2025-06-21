@@ -25,6 +25,7 @@ mutable struct Genome
     id::Int
     nodes::Dict{Int,Node}
     connections::Dict{Tuple{Int,Int},Connection}
+    fitness::Float64 # for storing fitness score to avoid using locally
 end
 
 end

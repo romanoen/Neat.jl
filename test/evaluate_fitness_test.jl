@@ -11,7 +11,7 @@ using Neat
 
     genome = Genome(1, nodes, connections)
 
-    fitness = evaluate_fitness(genome)
+    genome.fitness = evaluate_fitness(genome)
 
     # Because weights are both 1.0, XOR error will be large and negative
     # But we just check that it returns a Float64 and is finite
