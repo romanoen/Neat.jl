@@ -32,5 +32,7 @@ export Genome,
     reset_innovation_counter!,
     mutate,
     crossover,
-    compatibility_distance
+    compatibility_distance,
+    assign_species!,
+    adjust_fitness!
 end # module

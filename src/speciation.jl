@@ -3,6 +3,8 @@ module Speciation
 using ..Types
 
 export compatibility_distance
+export assign_species!
+export adjust_fitness!
 
 """
     compatibility_distance(g1::Genome, g2::Genome;
@@ -74,6 +76,69 @@ function compatibility_distance(g1::Genome, g2::Genome;
 
     # NEAT compatibility distance formula
     return (c1 * E / N) + (c2 * D / N) + (c3 * avg_weight_diff)
+end
+
+"""
+    assign_species!(population::Vector{Genome}, species_list::Vector{Vector{Genome}};
+                    threshold=3.0)
+
+Assign each genome in the population to a species in `species_list` based on
+compatibility distance. A genome is added to the first species where distance
+to the representative is below the threshold. If no such species exists, a new
+species is created with this genome.
+
+# Arguments
+- `population`: Vector of genomes to classify
+- `species_list`: Vector of species (each a vector of genomes)
+- `threshold`: Maximum allowed compatibility distance to join a species
+
+"""
+function assign_species!(population::Vector{Genome}, species_list::Vector{Vector{Genome}};
+                         threshold::Float64=3.0)
+
+    # Clear existing species
+    empty!(species_list)
+
+    for genome in population
+        assigned = false
+
+        for species in species_list
+            representative = species[1]  # pick first genome as representative
+            dist = compatibility_distance(genome, representative)
+
+            if dist < threshold
+                push!(species, genome)
+                assigned = true
+                break
+            end
+        end
+
+        # If no compatible species found, create a new one
+        if !assigned
+            push!(species_list, [genome])
+        end
+    end
+end
+
+"""
+    adjust_fitness!(species_list::Vector{Vector{Genome}})
+
+Modifies each genome's fitness value in-place by applying NEAT-style fitness sharing:
+- Divides each genome's fitness by the number of members in its species.
+
+# Arguments
+- `species_list`: A vector of species, where each species is a vector of genomes.
+
+# Side Effect
+- Overwrites each genome's `fitness` value with the adjusted fitness.
+"""
+function adjust_fitness!(species_list::Vector{Vector{Genome}})
+    for species in species_list
+        s_size = length(species)
+        for genome in species
+            genome.fitness /= s_size
+        end
+    end
 end
 
 end
