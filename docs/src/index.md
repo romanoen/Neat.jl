@@ -1,14 +1,15 @@
 ```@meta
-CurrentModule = MyPackage
+CurrentModule = Neat
 ```
 
-# MyPackage
+# Neat
 
-Documentation for [MyPackage](https://github.com/MusaOzcetin/MyPackage.jl).
+Documentation for [Neat](https://github.com/MusaOzcetin/Neat.jl).
 
 ```@index
+
 ```
 
 ```@autodocs
-Modules = [MyPackage, MyPackage.CreateGenome, MyPackage.Fitness, MyPackage.ForwardPass, MyPackage.Types,MyPackage.Mutation,MyPackage.Population]
+Modules = [Neat, Neat.CreateGenome, Neat.Fitness, Neat.ForwardPass, Neat.Types,Neat.Mutation,Neat.Population]
 ```

@@ -1,14 +1,14 @@
 using Neat
 using Documenter
 
-DocMeta.setdocmeta!(MyPackage, :DocTestSetup, :(using MyPackage); recursive=true)
+DocMeta.setdocmeta!(Neat, :DocTestSetup, :(using Neat); recursive=true)
 
 makedocs(;
-    modules=[MyPackage],
+    modules=[Neat],
     authors="Musa Ozcetin <musa.oezcetin@campus.tu-berlin.de>",
-    sitename="MyPackage.jl",
+    sitename="Neat.jl",
     format=Documenter.HTML(;
-        canonical="https://MusaOzcetin.github.io/MyPackage.jl",
+        canonical="https://MusaOzcetin.github.io/Neat.jl",
         edit_link="main",
         assets=String[],
     ),
@@ -18,6 +18,6 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/MusaOzcetin/MyPackage",
+    repo="github.com/MusaOzcetin/Neat.jl",
     devbranch="main",
 )
