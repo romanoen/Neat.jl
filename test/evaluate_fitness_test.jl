@@ -9,9 +9,10 @@ using Neat
         (1, 3) => Connection(1, 3, 1.0, true, 1), (2, 3) => Connection(2, 3, 1.0, true, 2)
     )
 
-    genome = Genome(1, nodes, connections)
+    genome = Genome(1, nodes, connections, 0.0)
 
-    genome.fitness = evaluate_fitness(genome)
+    fitness = evaluate_fitness(genome)
+    genome.fitness = fitness
 
     # Because weights are both 1.0, XOR error will be large and negative
     # But we just check that it returns a Float64 and is finite
