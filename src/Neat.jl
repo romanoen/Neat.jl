@@ -9,6 +9,7 @@ include("create_population.jl")
 include("innovation.jl")
 include("mutation.jl")
 include("crossover.jl")
+include("speciation.jl")
 
 using .Types
 using .CreateGenome
@@ -18,6 +19,7 @@ using .Population
 using .Innovation
 using .Mutation
 using .Crossover
+using .Speciation
 
 export Genome,
     Node,
@@ -29,6 +31,6 @@ export Genome,
     next_innovation_number,
     reset_innovation_counter!,
     mutate,
-    crossover
-
+    crossover,
+    compatibility_distance
 end # module
