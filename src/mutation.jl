@@ -29,6 +29,7 @@ function mutate_weights!(genome::Genome; perturb_chance=0.8, sigma=0.5)
     end
 end
 
+
 """
     add_connection!(genome::Genome)
 
@@ -145,6 +146,12 @@ function mutate(genome::Genome)
 
     if rand() < 0.03 #example value
         add_node!(genome)
+    end
+end
+
+function perturb_weight!(genome; scale=0.1)
+    for conn in genome.connections
+        conn.weight += randn() * scale
     end
 end
 
