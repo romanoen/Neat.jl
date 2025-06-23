@@ -149,6 +149,15 @@ function mutate(genome::Genome)
     end
 end
 
+"""
+   
+Applies random Gaussian perturbation to all connection weights in a genome.
+
+# Behavior
+Each connection's weight is adjusted by a small random amount drawn from a normal
+distribution (`randn()`), scaled by the given factor.
+
+"""
 function perturb_weight!(genome; scale=0.1)
     for conn in genome.connections
         conn.weight += randn() * scale
