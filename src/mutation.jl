@@ -6,27 +6,6 @@ using Random
 
 export mutate_weights!, mutate, add_connection!, add_node!
 
-"Check if adding a connection from `start_id` to `end_id` would create a cycle."
-function creates_cycle(genome::Genome, start_id::Int, end_id::Int)::Bool
-    visited = Set{Int}()
-    stack = [end_id]  # We check if there's a path from end_id back to start_id
-
-    while !isempty(stack)
-        current = pop!(stack)
-        if current == start_id
-            return true  # Cycle detected
-        end
-        push!(visited, current)
-        for conn in genome.connections
-            if conn.enabled && conn.in_node == current && !(conn.out_node in visited)
-                push!(stack, conn.out_node)
-            end
-        end
-    end
-
-    return false  # No cycle
-end
-
 """
     mutate_weights!(genome; perturb_chance=0.8, sigma=0.5)
 
@@ -50,7 +29,6 @@ function mutate_weights!(genome::Genome; perturb_chance=0.8, sigma=0.5)
     end
 end
 
-
 """
     add_connection!(genome::Genome)
 
@@ -70,11 +48,6 @@ function add_connection!(genome::Genome)
     nodes = collect(values(genome.nodes))
     attempts = 0
     max_attempts = 50
-    
-    if !creates_cycle(genome, from_node.id, to_node.id)
-    # safe to add connection
-    push!(genome.connections, ConnectionGene(from_node.id, to_node.id, randn(), true))
-    end
 
     while attempts < max_attempts  #avoid Infinite loop
         in_node = rand(nodes)
@@ -172,21 +145,6 @@ function mutate(genome::Genome)
 
     if rand() < 0.03 #example value
         add_node!(genome)
-    end
-end
-
-"""
-   
-Applies random Gaussian perturbation to all connection weights in a genome.
-
-# Behavior
-Each connection's weight is adjusted by a small random amount drawn from a normal
-distribution (`randn()`), scaled by the given factor.
-
-"""
-function perturb_weight!(genome; scale=0.1)
-    for conn in genome.connections
-        conn.weight += randn() * scale
     end
 end
 
