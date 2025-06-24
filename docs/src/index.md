@@ -11,5 +11,5 @@ Documentation for [Neat](https://github.com/MusaOzcetin/Neat.jl).
 ```
 
 ```@autodocs
-Modules = [Neat, Neat.CreateGenome, Neat.Fitness, Neat.ForwardPass, Neat.Types,Neat.Mutation,Neat.Population]
+Modules = [Neat, Neat.CreateGenome, Neat.Fitness, Neat.ForwardPass, Neat.Types,Neat.Mutation,Neat.Population,Neat.Crossover,Neat.Speciation,Neat.Innovation]
 ```
