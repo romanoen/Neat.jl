@@ -12,8 +12,6 @@ using Neat
     @test genome.fitness == 0.0
     @test genome.adjusted_fitness == 0.0
 
-
-    # --- Check node count ---
     @test length(genome.nodes) == 3  # 2 inputs + 1 output
 
     # --- Check connection count (should be inputs * outputs) ---
@@ -42,3 +40,4 @@ using Neat
     @test innov_numbers == collect(1:length(innov_numbers))
 
 end
+

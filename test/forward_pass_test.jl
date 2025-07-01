@@ -16,11 +16,11 @@ using Neat
     )
 
 
+
     # --- Create genome ---
     genome = Neat.Types.Genome(1, nodes, connections, 0.0, 0.0)
 
     # --- Input vector ---
-
     input = [1.0, 2.0]
 
     # --- Run forward_pass ---
