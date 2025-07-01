@@ -5,9 +5,13 @@ using Neat
     # Example: 2 inputs, 1 output
     genome = Neat.CreateGenome.create_genome(1, 2, 1)
 
-    # --- Check genome type and ID ---
-    @test isa(genome, Neat.Types.Genome)
+
+    # --- Check Genome Type and Fields ---
+    @test isa(genome, Genome)
     @test genome.id == 1
+    @test genome.fitness == 0.0
+    @test genome.adjusted_fitness == 0.0
+
 
     # --- Check node count ---
     @test length(genome.nodes) == 3  # 2 inputs + 1 output
@@ -15,10 +19,12 @@ using Neat
     # --- Check connection count (should be inputs * outputs) ---
     @test length(genome.connections) == 2  # 2 * 1 = 2
 
-    # --- Check node types ---
+    # --- Check Node Creation ---
+    @test length(genome.nodes) == 3  # 2 inputs + 1 output
     @test genome.nodes[1].nodetype == :input
     @test genome.nodes[2].nodetype == :input
     @test genome.nodes[3].nodetype == :output
+
 
     # --- Check that each input connects to each output ---
     for input_id in 1:2
@@ -34,4 +40,5 @@ using Neat
     # --- Check innovation numbers are unique and sequential ---
     innov_numbers = [conn.innovation_number for conn in values(genome.connections)]
     @test innov_numbers == collect(1:length(innov_numbers))
+
 end

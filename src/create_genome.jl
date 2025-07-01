@@ -46,7 +46,9 @@ function create_genome(id::Int, num_inputs::Int, num_outputs::Int)::Genome
         end
     end
 
-    return Genome(id, nodes, connections, 0.0)
+    # Added adjusted_fitness initialized to 0.0
+    return Genome(id, nodes, connections, 0.0, 0.0)
 end
+
 
 end # module
