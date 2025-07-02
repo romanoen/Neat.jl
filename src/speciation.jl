@@ -28,7 +28,7 @@ Uses NEAT's distance formula:
 - A `Float64` distance value (lower means more similar)
 """
 function compatibility_distance(g1::Genome, g2::Genome;
-                                 c1=1.0, c2=1.0, c3=0.4)
+                                 c1=1.0, c2=1.0, c3=3.0)
 
     # Build lookup tables for connections in each genome
     conns1 = Dict(c.innovation_number => c for c in values(g1.connections))
@@ -187,59 +187,27 @@ end
 
 
 """
-    select_elites(species::Vector{T}, num_elites::Int) where T
+    select_elites(species::Vector{T}, elite_frac::Float64) where {T}
 
-Selects the top `num_elites` genomes from the given species based on their `adjusted_fitness`.
+Selects the top `elite_frac * 100`% of genomes from the given species based
+on their `adjusted_fitness`.
 
 # Arguments
-- `species`: a vector of individuals (e.g., Genomes) that have an `adjusted_fitness` field.
-- `num_elites`: how many of the top individuals to select.
+- `species`: A vector of individuals with an `adjusted_fitness` field.
+- `elite_frac`: Fraction of the species to retain as elites (e.g., 0.1 for 10%).
 
 # Returns
-- A vector of the top-performing individuals, sorted by descending `adjusted_fitness`.
+- A vector of the top-performing genomes, sorted by descending `adjusted_fitness`.
 """
-function select_elites(species::Vector{T}, num_elites::Int) where {T}
+function select_elites(species::Vector{T}, elite_frac::Float64) where {T}
+    # Compute how many elites to keep at least 1)
+    num_elites = max(1, ceil(Int, elite_frac * length(species)))
+    # Sort the species in descending 
     sorted = sort(species, by = g -> g.adjusted_fitness, rev = true)
-    return sorted[1:min(num_elites, length(sorted))]
+    # Return the top num_elites genomes
+    return sorted[1:num_elites]
 end
 
-
-"""
-    select_parents(species::Vector{T}, num_parents::Int; exclude::Set{T}=Set()) where T
-
-Selects `num_parents` pairs of parents using fitness-proportionate (roulette wheel) selection.
-
-# Arguments
-- `species`: a vector of individuals with an `adjusted_fitness` field.
-- `num_parents`: the number of parent pairs to select.
-- `exclude`: (optional) a set of individuals to skip (e.g., elites).
-
-# Returns
-- A vector of `(parent1, parent2)` tuples, each selected by roulette wheel based on `adjusted_fitness`.
-"""
-function select_parents(species::Vector{T}, num_parents::Int; exclude::Set{T}=Set()) where {T}
-    candidates = filter(g -> !(g in exclude), species)
-    total_fitness = sum(g.adjusted_fitness for g in candidates)
-
-    if isempty(candidates) || total_fitness == 0
-        return [(rand(candidates), rand(candidates)) for _ in 1:num_parents]
-    end
-
-    function roulette_select()
-        r = rand() * total_fitness
-        acc = 0.0
-        for g in candidates
-            acc += g.adjusted_fitness
-            if acc >= r
-                return g
-            end
-        end
-        return last(candidates)
-    end
-
-    return [(roulette_select(), roulette_select()) for _ in 1:num_parents]
-end
-
-export select_elites, select_parents
+export select_elites
 
 end
