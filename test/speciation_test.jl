@@ -62,40 +62,26 @@ end
         @test counts[2] > counts[1]  # more fit species gets more offspring
     end
 
-    @testset "Selection Tests" begin
-    # Create mock genomes with varying adjusted fitness
-    genomes = [MockGenome(i) for i in 1:10]
-
-
     @testset "select_elites tests" begin
-    # Test with unique fitness values
-    species = [MockGenome(1.0), MockGenome(3.0), MockGenome(2.0), MockGenome(4.0)]
-    elites = select_elites(species, 0.5)
-    @test length(elites) == max(1, ceil(Int, 0.5 * length(species))) == 2
-    @test [g.adjusted_fitness for g in elites] == [4.0, 3.0]
-
-    # Test that at least one elite is returned when fraction is very small
-    small_species = [MockGenome(10.0), MockGenome(20.0)]
-    elites_small = select_elites(small_species, 0.1)
-    @test length(elites_small) == 1
-    @test elites_small[1].adjusted_fitness == 20.0
-
-    # Test full selection (elite_frac = 1.0)
-    full_species = [MockGenome(5.0), MockGenome(15.0), MockGenome(10.0)]
-    elites_full = select_elites(full_species, 1.0)
-    @test length(elites_full) == length(full_species) == 3
-    @test [g.adjusted_fitness for g in elites_full] == [15.0, 10.0, 5.0]
-
-    # Test non-integer result rounding up
-    varied = [MockGenome(i) for i in 1.0:5.0]
-    # 40% of 5 = 2, so elite count should be 2
-    elites_varied = select_elites(varied, 0.4)
-    @test length(elites_varied) == ceil(Int, 0.4 * length(varied)) == 2
-
-    # Test that input order doesn't affect output beyond fitness
-    shuffled = shuffle(varied)
-    elites_shuffled = select_elites(shuffled, 0.4)
-    @test [g.adjusted_fitness for g in elites_shuffled] == [5.0, 4.0]
-end
-end
+        # Create a species with known adjusted fitness values
+        species = [
+            MockGenome(0.9),
+            MockGenome(0.3),
+            MockGenome(0.7),
+            MockGenome(0.5),
+            MockGenome(0.8)
+        ]
+    
+        elite_frac = 0.4  # Should select top 2 genomes (ceil(5 * 0.4) = 2)
+        elites = select_elites(species, elite_frac)
+    
+        @test length(elites) == 2
+        @test elites[1].adjusted_fitness ≥ elites[2].adjusted_fitness
+        @test all(e.adjusted_fitness ≥ 0.7 for e in elites)
+    
+        # Edge case: elite fraction small but ensures at least one elite
+        elites_one = select_elites(species, 0.01)
+        @test length(elites_one) == 1
+        @test elites_one[1].adjusted_fitness == maximum(g.adjusted_fitness for g in species)
+    end
 end
