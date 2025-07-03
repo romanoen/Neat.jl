@@ -21,7 +21,7 @@ Run a full NEAT training loop for the specified number of generations.
 - The final evolved population
 """
 function train(;
-    pop_size=150, n_generations=100, input_size=2, output_size=1, speciation_threshold=0.3
+    pop_size=150, n_generations=100, input_size=2, output_size=1, speciation_threshold=0.3, elite_frac=0.6,
 )
     population = initialize_population(pop_size, input_size, output_size)
 
@@ -53,29 +53,16 @@ function train(;
                 continue
             end
 
-            elites = select_elites(species, 3)  # 1 Elite per species
-            append!(new_population, elites)
+            elites = select_elites(species, elite_frac) 
+            mating_pool = length(elites) >= 2 ? elites : species 
 
-            # Fill remaining slots with crossover + mutation
-            remaining = count - length(elites)
-            if remaining > 0
-                # only if there are enough genomes to crossover
-                if length(species) > length(elites)
-                    parents = select_parents(species, remaining; exclude=Set(elites))
-                    for (parent1, parent2) in parents
-                        child = crossover(parent1, parent2)
-                        mutate(child)
-                        push!(new_population, child)
-                    end
-                else
-                    # fallback: clone elites if not enough parents
-                    for _ in 1:remaining
-                        clone = deepcopy(elites[1])
-                        mutate(clone)
-                        push!(new_population, clone)
-                    end
-                end
+            for _ in 1:count
+                parent1, parent2 = rand(mating_pool, 2)
+                child = crossover(parent1, parent2)
+                mutate(child)
+                push!(new_population, child)
             end
+
         end
 
         population = new_population
@@ -88,7 +75,7 @@ function train(;
     return population
 end
 
-final_pop = train(; pop_size=100, n_generations=1500, speciation_threshold=3.0)
+final_pop = train(; pop_size=100, n_generations=100, speciation_threshold=3.0)
 
 println("Doooooooonnnnneeeeee")
 

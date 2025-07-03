@@ -36,7 +36,6 @@ export Genome,
     assign_species!,
     adjust_fitness!,
     compute_offspring_counts, 
-    select_elites, 
-    select_parents
+    select_elites
     
 end # module

@@ -62,28 +62,26 @@ end
         @test counts[2] > counts[1]  # more fit species gets more offspring
     end
 
-    @testset "Selection Tests" begin
-    # Create mock genomes with varying adjusted fitness
-    genomes = [MockGenome(i) for i in 1:10]
-
-
-    @testset "select_elites" begin
-        elites = select_elites(genomes, 3)
-        @test length(elites) == 3
-        @test all(e in genomes for e in elites)
-        @test elites[1].adjusted_fitness ≥ elites[2].adjusted_fitness ≥ elites[3].adjusted_fitness
+    @testset "select_elites tests" begin
+        # Create a species with known adjusted fitness values
+        species = [
+            MockGenome(0.9),
+            MockGenome(0.3),
+            MockGenome(0.7),
+            MockGenome(0.5),
+            MockGenome(0.8)
+        ]
+    
+        elite_frac = 0.4  # Should select top 2 genomes (ceil(5 * 0.4) = 2)
+        elites = select_elites(species, elite_frac)
+    
+        @test length(elites) == 2
+        @test elites[1].adjusted_fitness ≥ elites[2].adjusted_fitness
+        @test all(e.adjusted_fitness ≥ 0.7 for e in elites)
+    
+        # Edge case: elite fraction small but ensures at least one elite
+        elites_one = select_elites(species, 0.01)
+        @test length(elites_one) == 1
+        @test elites_one[1].adjusted_fitness == maximum(g.adjusted_fitness for g in species)
     end
-
-    @testset "select_parents" begin
-        elites = select_elites(genomes, 2)
-        parent_pairs = select_parents(genomes, 5; exclude=Set(elites))
-        @test length(parent_pairs) == 5
-        for (p1, p2) in parent_pairs
-            @test !(p1 in elites)
-            @test !(p2 in elites)
-            @test p1 in genomes
-            @test p2 in genomes
-        end
-    end
-end
 end

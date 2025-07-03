@@ -184,7 +184,7 @@ Applies all mutation operators to a genome.
 """
 function mutate(genome::Genome)
     mutate_weights!(genome)
-    if rand() < 0.05   #example value
+    if rand() < 0.3   #example value
         add_connection!(genome)
     end
 
