@@ -26,7 +26,7 @@ function train(;
     population = initialize_population(pop_size, input_size, output_size)
 
     for generation in 1:n_generations
-        println("\n=== Generation $generation ===")
+        #println("\n=== Generation $generation ===")
 
         for genome in population
             genome.fitness = evaluate_fitness(genome)
@@ -37,15 +37,14 @@ function train(;
 
         for (i, species) in enumerate(species_list)
             avg_fit = mean(g -> g.fitness, species)
-            println(
-                "Species $i: $(length(species)) genomes, average fitness $(round(avg_fit, digits=4))",
-            )
+            #println(
+            #    "Species $i: $(length(species)) genomes, average fitness $(round(avg_fit, digits=4))",
+            #)
         end
 
         adjust_fitness!(species_list)
 
         offspring_counts = compute_offspring_counts(species_list, pop_size)
-        println("Offspring counts: $offspring_counts")
 
         new_population = Genome[]
         for (species, count) in zip(species_list, offspring_counts)
@@ -75,7 +74,7 @@ function train(;
     return population
 end
 
-final_pop = train(; pop_size=100, n_generations=100, speciation_threshold=3.0)
+final_pop = train(; pop_size=10, n_generations=10, speciation_threshold=3.0)
 
 println("Doooooooonnnnneeeeee")
 
