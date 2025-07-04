@@ -1,6 +1,7 @@
 module Speciation
 
 using ..Types
+using Random
 
 export compatibility_distance
 export assign_species!
@@ -96,30 +97,57 @@ species is created with this genome.
 - `threshold`: Maximum allowed compatibility distance to join a species
 
 """
-function assign_species!(population::Vector{Genome}, species_list::Vector{Vector{Genome}};
-                         threshold::Float64=3.0)
-
-    # Clear existing species
+function assign_species!(population::Vector{Genome}, species_list::Vector{Vector{Genome}}; threshold::Float64=3.0)
     empty!(species_list)
+    shuffle!(population)
 
-    for genome in population
-        assigned = false
+    reps = Genome[]  # current representatives
 
-        for species in species_list
-            representative = species[1]  # pick first genome as representative
-            dist = compatibility_distance(genome, representative)
-
-            if dist < threshold
-                push!(species, genome)
-                assigned = true
-                break
-            end
+    println("=== Starting species assignment (threshold = $threshold) ===")
+    for (i, g) in enumerate(population)
+        println("
+[Genome #$i ID=$(g.id)] Computing distances to reps:")
+        if isempty(reps)
+            # first genome -> new species
+            println("  No reps yet -> create species #1 with rep ID=$(g.id)")
+            push!(species_list, [g])
+            push!(reps, g)
+            continue
         end
 
-        # If no compatible species found, create a new one
-        if !assigned
-            push!(species_list, [genome])
+        # compute distances
+        dists = [compatibility_distance(g, reps[j]) for j in eachindex(reps)]
+        # print per-rep distances
+        for j in eachindex(reps)
+            println("    to Rep #$j (ID=$(reps[j].id)): distance = $(round(dists[j], digits=4))")
         end
+
+        # distance stats
+        d_min = minimum(dists)
+        d_max = maximum(dists)
+        d_mean = sum(dists) / length(dists)
+        println("  -> stats: min=$(round(d_min,digits=4)), mean=$(round(d_mean,digits=4)), max=$(round(d_max,digits=4))")
+
+        # find best match index
+        idx = argmin(dists)
+        println("  -> best Rep #$idx ID=$(reps[idx].id) with distance=$(round(dists[idx],digits=4))")
+
+        if dists[idx] <= threshold
+            println("     Assigning to existing species #$idx")
+            push!(species_list[idx], g)
+        else
+            new_idx = length(species_list) + 1
+            println("     Exceeds threshold -> creating new species #$new_idx with rep ID=$(g.id)")
+            push!(species_list, [g])
+            push!(reps, g)
+        end
+    end
+
+    println("
+=== Final species summary ===")
+    for (k, s) in enumerate(species_list)
+        ids = [gem.id for gem in s]
+        println("Species #$k (rep ID=$(reps[k].id)): $(length(s)) genomes -> IDs = $(ids)")
     end
 end
 
