@@ -2,9 +2,13 @@ module CreateGenome
 
 using ..Types
 export create_genome
+export next_genome_id
+
+#global genome_id tracker
+const genome_id_counter = Ref(0)
 
 """
-    create_genome(id::Int, num_inputs::Int, num_outputs::Int) → Genome
+    create_genome(num_inputs::Int, num_outputs::Int) → Genome
 
 Creates a `Genome` with:
 - The specified number of input nodes
@@ -14,16 +18,15 @@ Creates a `Genome` with:
 NO HIDDEN NODES ARE CREATED INITIALLY
 
 # Arguments
-- `id::Int`: Unique genome ID.
 - `num_inputs::Int`: Number of input nodes.
 - `num_outputs::Int`: Number of output nodes.
 
 # Returns
 - `Genome`: A new genome with nodes and fully connected input-output links.
 """
-function create_genome(id::Int, num_inputs::Int, num_outputs::Int)::Genome
-    nodes = Dict{Int, Node}()
-    connections = Dict{Tuple{Int, Int}, Connection}()
+function create_genome(num_inputs::Int, num_outputs::Int)::Genome
+    nodes = Dict{Int,Node}()
+    connections = Dict{Tuple{Int,Int},Connection}()
 
     # Create input nodes
     for i in 1:num_inputs
@@ -47,9 +50,23 @@ function create_genome(id::Int, num_inputs::Int, num_outputs::Int)::Genome
     end
 
     # Added adjusted_fitness initialized to 0.0
-    return Genome(id, nodes, connections, 0.0, 0.0)
+    return Genome(next_genome_id(), nodes, connections, 0.0, 0.0)
 end
 
 
-end # module
+"""
+    next_genome_id() → Int
 
+Returns the next global node id.
+"""
+next_genome_id()   = (genome_id_counter[] += 1; genome_id_counter[])
+
+"""
+    reset_id!()
+
+Resets the counter (useful for tests).
+"""
+reset_genome_id!() = (genome_id_counter[] = 0)
+
+
+end # module

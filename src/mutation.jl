@@ -19,10 +19,10 @@ Mutates the weights of a genome's connections in-place.
 - `perturb_chance`: Chance of small mutation vs full replacement
 - `sigma`: Stddev of the perturbation
 """
-function mutate_weights!(genome::Genome; perturb_chance=0.8, sigma=0.5)
+function mutate_weights!(genome::Genome; perturb_chance=0.96, sigma=0.06)
     for conn in values(genome.connections)
         if rand() < perturb_chance
-            conn.weight += randn() * sigma  # change curretn weight
+            conn.weight += randn() * sigma  # change current weight
         else
             conn.weight = randn()           # new random weight
         end
