@@ -20,20 +20,21 @@ end
 ### A Pluto.jl notebook ###
 # XOR_NEAT_Pluto.jl
 
+
 begin
-    import Pkg
+	import Pkg
+	Pkg.activate("C:/Users/vajda/OneDrive/Desktop/Neat.jl") 
 
-    # Make sure required packages are available
-    Pkg.add("GraphRecipes")
+	# Make sure all dependencies are installed
+	Pkg.instantiate()
 
-    # Activate the local Neat.jl project environment (adjust this path as needed!)
-    Pkg.activate("C:/Users/vajda/OneDrive/Desktop/Neat.jl")
+	# Now install missing optional packages
+	#Pkg.add("GraphRecipes")
+	#Pkg.add("PlutoUI")
 
-    # Load packages
-    using PlutoUI, Plots, GraphRecipes
-
-    # Import functionality from your local Neat module
-    import Neat: create_genome, evaluate_fitness, initialize_population, mutate, forward_pass
+	# Now use them
+	using PlutoUI, Plots, GraphRecipes
+	import Neat: create_genome, evaluate_fitness, initialize_population, mutate, forward_pass
 end
 
 # ╔═╡ 4810c522-a1fe-4fdf-893c-5e7eb4cca584
