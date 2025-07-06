@@ -29,7 +29,7 @@ Uses NEAT's distance formula:
 - A `Float64` distance value (lower means more similar)
 """
 function compatibility_distance(g1::Genome, g2::Genome;
-                                 c1=1.0, c2=1.0, c3=3.0)
+                                 c1=0.5, c2=0.5, c3=3.0)
 
     # Build lookup tables for connections in each genome
     conns1 = Dict(c.innovation_number => c for c in values(g1.connections))
@@ -88,8 +88,9 @@ Groups genomes into species based on compatibility.
 
 Assign each genome in the population to a species in `species_list` based on
 compatibility distance. A genome is added to the first species where distance
-to the representative is below the threshold. If no such species exists, a new
-species is created with this genome.
+to the representative is below the threshold. This is greedy but also thoughtfully. We 
+are comparing the dist of a genome with all of the representatives of a species and select the lowest. 
+Still its not guaranteed that the representatives are good so thats something we might improve in the future. 
 
 # Arguments
 - `population`: Vector of genomes to classify
@@ -103,52 +104,31 @@ function assign_species!(population::Vector{Genome}, species_list::Vector{Vector
 
     reps = Genome[]  # current representatives
 
-    println("=== Starting species assignment (threshold = $threshold) ===")
     for (i, g) in enumerate(population)
-        println("
-[Genome #$i ID=$(g.id)] Computing distances to reps:")
+
         if isempty(reps)
             # first genome -> new species
-            println("  No reps yet -> create species #1 with rep ID=$(g.id)")
             push!(species_list, [g])
-            push!(reps, g)
+            push!(reps, g) # also push to representatives group
             continue
         end
 
-        # compute distances
+        # compute distances to each representative
         dists = [compatibility_distance(g, reps[j]) for j in eachindex(reps)]
-        # print per-rep distances
-        for j in eachindex(reps)
-            println("    to Rep #$j (ID=$(reps[j].id)): distance = $(round(dists[j], digits=4))")
-        end
+        
 
-        # distance stats
-        d_min = minimum(dists)
-        d_max = maximum(dists)
-        d_mean = sum(dists) / length(dists)
-        println("  -> stats: min=$(round(d_min,digits=4)), mean=$(round(d_mean,digits=4)), max=$(round(d_max,digits=4))")
-
-        # find best match index
+        # find best match index which is the minimum distance in this case
         idx = argmin(dists)
-        println("  -> best Rep #$idx ID=$(reps[idx].id) with distance=$(round(dists[idx],digits=4))")
 
+        # we found at least one dist which is smaller than the threshold so we assign
         if dists[idx] <= threshold
-            println("     Assigning to existing species #$idx")
             push!(species_list[idx], g)
-        else
-            new_idx = length(species_list) + 1
-            println("     Exceeds threshold -> creating new species #$new_idx with rep ID=$(g.id)")
+        else # we didnt find a fitting species so we create a new representative
             push!(species_list, [g])
             push!(reps, g)
         end
     end
 
-    println("
-=== Final species summary ===")
-    for (k, s) in enumerate(species_list)
-        ids = [gem.id for gem in s]
-        println("Species #$k (rep ID=$(reps[k].id)): $(length(s)) genomes -> IDs = $(ids)")
-    end
 end
 
 """
@@ -228,7 +208,7 @@ on their `adjusted_fitness`.
 - A vector of the top-performing genomes, sorted by descending `adjusted_fitness`.
 """
 function select_elites(species::Vector{T}, elite_frac::Float64) where {T}
-    # Compute how many elites to keep at least 1)
+    # Compute how many elites to keep at least 2)
     num_elites = max(1, ceil(Int, elite_frac * length(species)))
     # Sort the species in descending 
     sorted = sort(species, by = g -> g.adjusted_fitness, rev = true)

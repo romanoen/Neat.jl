@@ -1,9 +1,11 @@
 using Pkg
 Pkg.activate("../")
+Pkg.add("Plots")
 
 using Neat
 using Random
 using Statistics
+using Plots
 
 """
     train(; pop_size=150, n_generations=100, input_size=2, output_size=1, speciation_threshold=0.3)
@@ -26,9 +28,11 @@ function train(;
     input_size=2,
     output_size=1,
     speciation_threshold=0.3,
-    elite_frac=0.6,
+    elite_frac=0.3,
+    early_stopping=0.005
 )
     population = initialize_population(pop_size, input_size, output_size)
+    best_fitness_history = Float64[]
 
     for generation in 1:n_generations
         #println("\n=== Generation $generation ===")
@@ -37,15 +41,10 @@ function train(;
             genome.fitness = evaluate_fitness(genome)
         end
 
+        push!(best_fitness_history,maximum(g -> g.fitness, population))
+
         species_list = Vector{Vector{Genome}}()
         assign_species!(population, species_list; threshold=speciation_threshold)
-
-        for (i, species) in enumerate(species_list)
-            avg_fit = mean(g -> g.fitness, species)
-            #println(
-            #    "Species $i: $(length(species)) genomes, average fitness $(round(avg_fit, digits=4))",
-            #)
-        end
 
         adjust_fitness!(species_list)
 
@@ -75,13 +74,22 @@ function train(;
         genome.fitness = evaluate_fitness(genome)
     end
 
-    return population
+    return population, best_fitness_history
 end
 
-final_pop = train(; pop_size=10, n_generations=10, speciation_threshold=3.0)
-
-println("Doooooooonnnnneeeeee")
+final_pop, best_fitness_history = train(; pop_size=200, n_generations=500, speciation_threshold=4.0, elite_frac = 0.1)
 
 idx = argmax(g -> g.fitness, final_pop)
 best = idx
 println("Best fitness: ", best.fitness)
+
+
+p = plot(
+    best_fitness_history,
+    xlabel="Generation",
+    ylabel="Best Fitness",
+    title="Evolution of Best Genome Fitness",
+    legend=false,
+)
+
+savefig(p, "plots/fitness.png")
