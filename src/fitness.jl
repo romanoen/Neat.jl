@@ -5,6 +5,8 @@ using ..ForwardPass
 
 export evaluate_fitness
 
+const XOR_DATA = [([0.0, 0.0], 0.0), ([0.0, 1.0], 1.0), ([1.0, 0.0], 1.0), ([1.0, 1.0], 0.0)]
+
 """
     evaluate_fitness(genome::Genome) → Float64
 
@@ -19,11 +21,10 @@ for all four input–output pairs and returning the negative total error.
   (Higher value ⇒ lower error ⇒ better fitness.)
 """
 function evaluate_fitness(genome::Genome)::Float64
-    xor_data = [([0.0, 0.0], 0.0), ([0.0, 1.0], 1.0), ([1.0, 0.0], 1.0), ([1.0, 1.0], 0.0)]
 
     total_error = 0.0
 
-    for (x, target) in xor_data
+    for (x, target) in XOR_DATA
         acts = forward_pass(genome, x)
 
         output_nodes = [n.id for n in values(genome.nodes) if n.nodetype == :output]
