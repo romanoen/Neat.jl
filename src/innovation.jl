@@ -4,7 +4,7 @@ export get_innovation_number, reset_innovation_counter!
 
 # Global innovation number tracker (starts at 3 because 1 & 2 are used initially)
 # Store the highest innovation number and increment it each time you mutate or cross over
-const innovation_counter = Ref(3)
+const innovation_counter = Ref(1)
 const connection_innovations = Dict{Tuple{Int,Int},Int}()
 
 """
@@ -32,7 +32,8 @@ end
 Resets the counter (useful for tests).
 """
 function reset_innovation_counter!()
-    return innovation_counter[] = 3
+    return innovation_counter[] = 1
+    empty!(connection_innovations)
 end
 
 end
