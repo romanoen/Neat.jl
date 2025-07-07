@@ -3,6 +3,8 @@ using Neat
 
 @testset "create_genome" begin
     # Example: 2 inputs, 1 output
+    Neat.CreateGenome.reset_genome_id!()
+    Neat.Innovation.reset_innovation_counter!()
     genome = Neat.CreateGenome.create_genome(2, 1)
 
 

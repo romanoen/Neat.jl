@@ -2,11 +2,11 @@
 module Neat
 
 include("genome.jl")
+include("innovation.jl")
 include("create_genome.jl")
 include("forward_pass.jl")
 include("fitness.jl")
 include("create_population.jl")
-include("innovation.jl")
 include("mutation.jl")
 include("crossover.jl")
 include("speciation.jl")
@@ -28,7 +28,7 @@ export Genome,
     forward_pass,
     evaluate_fitness,
     initialize_population,
-    next_innovation_number,
+    get_innovation_number,
     reset_innovation_counter!,
     mutate,
     crossover,
