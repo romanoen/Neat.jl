@@ -31,6 +31,10 @@ This package defines the basic building blocks of a NEAT genome:
 ## Getting Started
 
 📘 [Getting Started Guide](docs/getting_started.md)
+## Documentation
+
+For full documentation, please visit the [Neat.jl Documentation](https://musaozcetin.github.io/Neat.jl/dev/).
+```
 
 
 
@@ -38,4 +42,3 @@ This package defines the basic building blocks of a NEAT genome:
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://MusaOzcetin.github.io/Neat.jl/dev/)
 [![Build Status](https://github.com/MusaOzcetin/Neat.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/MusaOzcetin/Neat.jl/actions/workflows/CI.yml?query=branch%3Amain)
 [![Coverage](https://codecov.io/gh/MusaOzcetin/Neat.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/MusaOzcetin/Neat.jl)
-```
