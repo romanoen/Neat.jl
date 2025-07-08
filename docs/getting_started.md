@@ -18,37 +18,43 @@ This guide will walk you through setting up and running your first experiment us
 
 ## 1. Clone the repository
 
-bash
+```bash
 git clone https://github.com/your-username/Neat.jl.git
 cd Neat.jl
-
+```
 ## 2. Basic Working Example
+```julia
 using Neat  
-
+```
 ### 1. Create a new genome with 2 input nodes and 1 output node
+```julia
 genome = create_genome(2, 1)
 println("Created genome with ID: ", genome.id)
 println("Number of nodes: ", length(genome.nodes))
 println("Number of connections: ", length(genome.connections))
-
+```
 ### 2. Evaluate the genome's fitness
+```julia
 fitness_before = evaluate_fitness(genome)
 genome.fitness = fitness_before
 println("Fitness before mutation: ", round(fitness_before, digits=4))
-
+```
 ### 3. Mutate the genome 
+```julia
 mutate(genome)
 
 println("After mutation:")
 println("Number of nodes: ", length(genome.nodes))
 println("Number of connections: ", length(genome.connections))
-
+```
 ### 4. Re-evaluate fitness after mutation
+```julia
 fitness_after = evaluate_fitness(genome)
 genome.fitness = fitness_after
 println("Fitness after mutation: ", round(fitness_after, digits=4))
-
+```
 ### 5. Simple evolutionary loop example: initialize a population, evaluate, mutate
+```julia
 population = [create_genome(2, 1) for _ in 1:10]
 
 for generation in 1:10
@@ -67,7 +73,7 @@ for generation in 1:10
         mutate(g)
     end
 end
-
+```
 ## 3. Enhancements
 - number of species and number of genomes per species
 - mutation regarding either the weights, nodes or connections
