@@ -20,7 +20,7 @@ A Dict specifying default settings for population, mutation, crossover, and spec
 const DEFAULT_CONFIG = Dict(
     "train_param" => Dict(
         "pop_size"            => 300,
-        "n_generations"       => 1000,
+        "n_generations"       => 200,
         "input_size"          => 2,
         "output_size"         => 1,
         "speciation_threshold" => 4.0,
@@ -79,6 +79,10 @@ function __init__()
      load_config()
 end
 
+function get_config()
+    return load_config()
+end
+
 # Load configuration at module import
 """
 CONFIG :: Dict{String,Any}
@@ -88,6 +92,6 @@ Global constant holding the loaded configuration.
 const CONFIG = load_config()
 
 # Export public API
-export CONFIG
+export CONFIG, get_config
 
 end # module NeatConfig

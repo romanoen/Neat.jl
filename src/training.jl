@@ -1,23 +1,29 @@
-using Pkg
-Pkg.activate("../")
-Pkg.add("Plots")
+module NeatTrain
 
-using Neat
 using Random
 using Statistics
 using Plots
+using ..NeatConfig 
+using ..Types
+using ..CreateGenome
+using ..ForwardPass
+using ..Fitness
+using ..Population
+using ..Innovation
+using ..Mutation
+using ..Crossover
+using ..Speciation
+using ..NeatTrain
 
+
+export train
 """
-    train(; pop_size=150, n_generations=100, input_size=2, output_size=1, speciation_threshold=0.3)
+    train()
 
-Run a full NEAT training loop for the specified number of generations.
+Run a full NEAT training loop
 
 # Keyword Arguments
-- `pop_size`: Number of genomes in the population
-- `n_generations`: Number of generations to evolve
-- `input_size`: Number of input nodes per genome
-- `output_size`: Number of output nodes per genome
-- `speciation_threshold`: Compatibility threshold for species assignment
+no keywords, parameters are in neat_config.toml that is automatically generated during project intialisation
 
 # Returns
 - The final evolved population
@@ -25,7 +31,8 @@ Run a full NEAT training loop for the specified number of generations.
 function train()
 
     # setup config
-    m = CONFIG["train_param"]
+    conf = get_config()
+    m = conf["train_param"]
     pop_size = m["pop_size"]
     n_generations = m["n_generations"]
     input_size = m["input_size"]
@@ -72,7 +79,7 @@ function train()
         end
 
         population = new_population
-    end # for each generation
+    end
 
     for genome in population
         genome.fitness = evaluate_fitness(genome)
@@ -80,20 +87,4 @@ function train()
 
     return population, best_fitness_history
 end
-
-final_pop, best_fitness_history = train()
-
-idx = argmax(g -> g.fitness, final_pop)
-best = idx
-println("Best fitness: ", best.fitness)
-
-
-p = plot(
-    best_fitness_history,
-    xlabel="Generation",
-    ylabel="Best Fitness",
-    title="Evolution of Best Genome Fitness",
-    legend=false,
-)
-
-savefig(p, "plots/fitness.png")
+end 
