@@ -22,15 +22,19 @@ Run a full NEAT training loop for the specified number of generations.
 # Returns
 - The final evolved population
 """
-function train(;
-    pop_size=150,
-    n_generations=100,
-    input_size=2,
-    output_size=1,
-    speciation_threshold=0.3,
-    elite_frac=0.3,
-    early_stopping=0.005
-)
+function train()
+
+    # setup config
+    m = CONFIG["train_param"]
+    pop_size = m["pop_size"]
+    n_generations = m["n_generations"]
+    input_size = m["input_size"]
+    output_size = m["output_size"]
+    speciation_threshold = m["speciation_threshold"]
+    elite_frac = m["elite_frac"]
+
+
+
     population = initialize_population(pop_size, input_size, output_size)
     best_fitness_history = Float64[]
 
@@ -77,7 +81,7 @@ function train(;
     return population, best_fitness_history
 end
 
-final_pop, best_fitness_history = train(; pop_size=200, n_generations=500, speciation_threshold=4.0, elite_frac = 0.1)
+final_pop, best_fitness_history = train()
 
 idx = argmax(g -> g.fitness, final_pop)
 best = idx
