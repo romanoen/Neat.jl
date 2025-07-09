@@ -42,7 +42,6 @@ export Genome,
     compute_offspring_counts,
     select_elites,
     next_genome_id,
-    CONFIG,
     get_config,
     train
 end # module

@@ -184,8 +184,8 @@ end
 Applies all mutation operators to a genome.
 """
 function mutate(genome::Genome)
-
-    m = CONFIG["mutation"]
+    conf = get_config()
+    m = conf["mutation"]
     perturb_chance = m["perturb_chance"]
     sigma           = m["sigma"]
     add_conn_prob   = m["add_connection_prob"]

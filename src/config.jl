@@ -75,23 +75,17 @@ function load_config()
     return TOML.parsefile(toml_path)
 end
 
+# initially create config file
 function __init__()
      load_config()
 end
 
+# get config 
 function get_config()
     return load_config()
 end
 
-# Load configuration at module import
-"""
-CONFIG :: Dict{String,Any}
-
-Global constant holding the loaded configuration.
-"""
-const CONFIG = load_config()
-
 # Export public API
-export CONFIG, get_config
+export get_config
 
 end # module NeatConfig

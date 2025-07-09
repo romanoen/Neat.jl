@@ -30,8 +30,8 @@ Uses NEAT's distance formula:
 - A `Float64` distance value (lower means more similar)
 """
 function compatibility_distance(g1::Genome, g2::Genome;)
-
-    m = CONFIG["speciation"]
+    conf = get_config()
+    m = m["speciation"]
     c1 = m["c1"]
     c2 = m["c2"]
     c3 = m["c3"]

@@ -41,7 +41,7 @@ function evaluate_fitness(genome::Genome)::Float64
 
     total_error = 0.0
 
-    for (x, target) in PARITY3_DATA
+    for (x, target) in XOR_DATA
         acts = forward_pass(genome, x)
 
         output_nodes = [n.id for n in values(genome.nodes) if n.nodetype == :output]
