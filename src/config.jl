@@ -51,7 +51,7 @@ _default_toml_path() -> String
 Return the file path for the TOML configuration file (`neat_config.toml`) in the current working directory.
 """
 function _default_toml_path()
-    return joinpath(pwd(), "../neat_config.toml")
+    return joinpath(pwd(), "neat_config.toml")
 end
 
 """
@@ -73,6 +73,10 @@ function load_config()
         print("Setting up parameters from neat_config.toml")
     end
     return TOML.parsefile(toml_path)
+end
+
+function __init__()
+     load_config()
 end
 
 # Load configuration at module import
