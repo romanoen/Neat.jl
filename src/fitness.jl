@@ -6,7 +6,8 @@ using ..NeatConfig
 
 export evaluate_fitness
 
-# trainingdata, can be outsourced but not necessarily
+# ----- trainingdata, can be outsourced in future -------
+
 const XOR_DATA = [
     ([0.0, 0.0], 0.0), 
     ([0.0, 1.0], 1.0), 
