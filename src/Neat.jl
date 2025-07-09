@@ -11,7 +11,7 @@ include("create_population.jl")
 include("mutation.jl")
 include("crossover.jl")
 include("speciation.jl")
-include("../experiments/training.jl")
+include("training.jl")
 
 using .NeatConfig 
 using .Types
