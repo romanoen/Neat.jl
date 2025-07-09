@@ -31,7 +31,7 @@ Uses NEAT's distance formula:
 """
 function compatibility_distance(g1::Genome, g2::Genome;)
     conf = get_config()
-    m = m["speciation"]
+    m = conf["speciation"]
     c1 = m["c1"]
     c2 = m["c2"]
     c3 = m["c3"]

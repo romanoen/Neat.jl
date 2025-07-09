@@ -1,3 +1,5 @@
+using Pkg
+Pkg.activate("../")
 using Test
 using Neat
 using Neat: Genome, select_elites, select_parents
