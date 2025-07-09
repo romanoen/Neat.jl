@@ -1,6 +1,7 @@
 # src/Neat.jl
 module Neat
 
+include("config.jl")
 include("genome.jl")
 include("innovation.jl")
 include("create_genome.jl")
@@ -10,7 +11,9 @@ include("create_population.jl")
 include("mutation.jl")
 include("crossover.jl")
 include("speciation.jl")
+include("training.jl")
 
+using .NeatConfig 
 using .Types
 using .CreateGenome
 using .ForwardPass
@@ -20,6 +23,7 @@ using .Innovation
 using .Mutation
 using .Crossover
 using .Speciation
+using .NeatTrain
 
 export Genome,
     Node,
@@ -37,6 +41,7 @@ export Genome,
     adjust_fitness!,
     compute_offspring_counts,
     select_elites,
-    next_genome_id
-
+    next_genome_id,
+    get_config,
+    train
 end # module

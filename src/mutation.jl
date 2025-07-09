@@ -2,6 +2,7 @@ module Mutation
 
 using ..Types
 using ..Innovation
+using ..NeatConfig
 using Random
 
 export mutate_weights!, mutate, add_connection!, add_node!, causes_cycle
@@ -183,12 +184,20 @@ end
 Applies all mutation operators to a genome.
 """
 function mutate(genome::Genome)
-    mutate_weights!(genome)
-    if rand() < 0.3   #example value
+    conf = get_config()
+    m = conf["mutation"]
+    perturb_chance = m["perturb_chance"]
+    sigma           = m["sigma"]
+    add_conn_prob   = m["add_connection_prob"]
+    add_node_prob   = m["node_add_prob"]
+
+    mutate_weights!(genome; perturb_chance = perturb_chance, sigma = sigma)
+
+    if rand() < add_conn_prob
         add_connection!(genome)
     end
 
-    if rand() < 0.03 #example value
+    if rand() < add_node_prob
         add_node!(genome)
     end
 end

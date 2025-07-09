@@ -5,3 +5,4 @@
 /Manifest*.toml
 /docs/Manifest*.toml
 /docs/build/
+neat_config.toml

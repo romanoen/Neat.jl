@@ -2,10 +2,28 @@ module Fitness
 
 using ..Types
 using ..ForwardPass
+using ..NeatConfig
 
 export evaluate_fitness
 
-const XOR_DATA = [([0.0, 0.0], 0.0), ([0.0, 1.0], 1.0), ([1.0, 0.0], 1.0), ([1.0, 1.0], 0.0)]
+# ----- trainingdata, can be outsourced in future -------
+
+const XOR_DATA = [
+    ([0.0, 0.0], 0.0), 
+    ([0.0, 1.0], 1.0), 
+    ([1.0, 0.0], 1.0), 
+    ([1.0, 1.0], 0.0)]
+
+const PARITY3_DATA = [
+    ([0.0, 0.0, 0.0], 0.0),
+    ([0.0, 0.0, 1.0], 1.0),
+    ([0.0, 1.0, 0.0], 1.0),
+    ([0.0, 1.0, 1.0], 0.0),
+    ([1.0, 0.0, 0.0], 1.0),
+    ([1.0, 0.0, 1.0], 0.0),
+    ([1.0, 1.0, 0.0], 0.0),
+    ([1.0, 1.0, 1.0], 1.0),
+]
 
 """
     evaluate_fitness(genome::Genome) → Float64
