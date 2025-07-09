@@ -2,10 +2,27 @@ module Fitness
 
 using ..Types
 using ..ForwardPass
+using ..NeatConfig
 
 export evaluate_fitness
 
-const XOR_DATA = [([0.0, 0.0], 0.0), ([0.0, 1.0], 1.0), ([1.0, 0.0], 1.0), ([1.0, 1.0], 0.0)]
+# trainingdata, can be outsourced but not necessarily
+const XOR_DATA = [
+    ([0.0, 0.0], 0.0), 
+    ([0.0, 1.0], 1.0), 
+    ([1.0, 0.0], 1.0), 
+    ([1.0, 1.0], 0.0)]
+
+const PARITY3_DATA = [
+    ([0.0, 0.0, 0.0], 0.0),
+    ([0.0, 0.0, 1.0], 1.0),
+    ([0.0, 1.0, 0.0], 1.0),
+    ([0.0, 1.0, 1.0], 0.0),
+    ([1.0, 0.0, 0.0], 1.0),
+    ([1.0, 0.0, 1.0], 0.0),
+    ([1.0, 1.0, 0.0], 0.0),
+    ([1.0, 1.0, 1.0], 1.0),
+]
 
 """
     evaluate_fitness(genome::Genome) → Float64
@@ -24,7 +41,7 @@ function evaluate_fitness(genome::Genome)::Float64
 
     total_error = 0.0
 
-    for (x, target) in XOR_DATA
+    for (x, target) in PARITY3_DATA
         acts = forward_pass(genome, x)
 
         output_nodes = [n.id for n in values(genome.nodes) if n.nodetype == :output]

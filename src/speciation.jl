@@ -1,6 +1,7 @@
 module Speciation
 
 using ..Types
+using ..NeatConfig
 using Random
 
 export compatibility_distance
@@ -8,9 +9,9 @@ export assign_species!
 export adjust_fitness!
 export compute_offspring_counts
 
+
 """
-    compatibility_distance(g1::Genome, g2::Genome;
-                           c1=1.0, c2=1.0, c3=0.4) → Float64
+    compatibility_distance(g1::Genome, g2::Genome;) → Float64
 
 Compute the compatibility distance between two genomes `g1` and `g2` (similarity between genomes using innovation numbers and weights).
 Uses NEAT's distance formula:
@@ -28,8 +29,13 @@ Uses NEAT's distance formula:
 # Returns
 - A `Float64` distance value (lower means more similar)
 """
-function compatibility_distance(g1::Genome, g2::Genome;
-                                 c1=0.5, c2=0.5, c3=3.0)
+function compatibility_distance(g1::Genome, g2::Genome;)
+
+    m = CONFIG["speciation"]
+    c1 = m["c1"]
+    c2 = m["c2"]
+    c3 = m["c3"]
+
 
     # Build lookup tables for connections in each genome
     conns1 = Dict(c.innovation_number => c for c in values(g1.connections))
