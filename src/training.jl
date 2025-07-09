@@ -1,7 +1,6 @@
 module NeatTrain
 
 using Random
-using Statistics
 using Plots
 using ..NeatConfig 
 using ..Types
