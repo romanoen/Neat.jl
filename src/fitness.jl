@@ -39,10 +39,14 @@ for all four input–output pairs and returning the negative total error.
   (Higher value ⇒ lower error ⇒ better fitness.)
 """
 function evaluate_fitness(genome::Genome)::Float64
-
+    conf = get_config()
     total_error = 0.0
+    m = conf["data"]
+    ds_name = m["training_data"]
 
-    for (x, target) in XOR_DATA
+    ds = getfield(Fitness, Symbol(ds_name))
+
+    for (x, target) in ds
         acts = forward_pass(genome, x)
 
         output_nodes = [n.id for n in values(genome.nodes) if n.nodetype == :output]
