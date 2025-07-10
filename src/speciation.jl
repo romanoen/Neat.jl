@@ -23,7 +23,7 @@ where
 - `W` is the average weight difference of matching genes,
 - `N` is the number of genes in the larger genome (treated as 1 if small for stability).
 
-If any of `c1`, `c2`, or `c3` is `missing`, its value is loaded from the speciation section of the configuration.
+If any of `c1`, `c2`, or `c3` is not defined, its value is loaded from the speciation section of the configuration.
 
 # Arguments
 - `g1`, `g2` : The two `Genome` instances to compare.
@@ -35,16 +35,11 @@ If any of `c1`, `c2`, or `c3` is `missing`, its value is loaded from the speciat
 - `Float64` : The compatibility distance (lower means more similar).
 """
 function compatibility_distance(g1::Genome, g2::Genome;
-        c1::Union{Float64,Missing}=missing,
-        c2::Union{Float64,Missing}=missing,
-        c3::Union{Float64,Missing}=missing
+    c1::Float64                  = get_config()["speciation"]["c1"],
+    c2::Float64                  = get_config()["speciation"]["c2"],
+    c3::Float64                  = get_config()["speciation"]["c3"],
     )::Float64
 
-    conf = get_config()
-    m = conf["speciation"]
-    c1   = coalesce(c1, m["c1"])
-    c2   = coalesce(c2, m["c2"])
-    c3   = coalesce(c3, m["c3"])
 
     # Build lookup tables for connections in each genome
     conns1 = Dict(c.innovation_number => c for c in values(g1.connections))
@@ -111,15 +106,15 @@ If `speciation_threshold`, `c1`, `c2`, or `c3` is `missing`, the corresponding v
 # Side Effects
 - Clears and reassigns `species_list` in-place.
 """
-function assign_species!(population::Vector{Genome}, species_list::Vector{Vector{Genome}};
-    speciation_threshold::Union{Float64,Missing}=missing,
-        c1::Union{Float64,Missing}=missing,
-        c2::Union{Float64,Missing}=missing,
-        c3::Union{Float64,Missing}=missing
-    )
-    conf = get_config()
-    m = conf["train_param"]
-    speciation_threshold   = coalesce(speciation_threshold, m["speciation_threshold"])
+function assign_species!(
+    population::Vector{Genome},
+    species_list::Vector{Vector{Genome}};
+    speciation_threshold::Float64 = get_config()["train_param"]["speciation_threshold"],
+    c1::Float64                  = get_config()["speciation"]["c1"],
+    c2::Float64                  = get_config()["speciation"]["c2"],
+    c3::Float64                  = get_config()["speciation"]["c3"],
+)
+
     empty!(species_list)
     shuffle!(population)
 

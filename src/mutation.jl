@@ -161,7 +161,7 @@ Apply a full suite of mutation operators to `genome` according to configured pro
 - With probability `add_connection_prob`, attempt `add_connection!`.
 - With probability `node_add_prob`, attempt `add_node!`.
 
-If any probability or `max_attempts` is `missing`, the value is loaded from the `mutation` section of the configuration.
+If any probability or `max_attempts` is not defined, the value is loaded from the `mutation` section of the configuration.
 
 # Keyword Arguments
 - `perturb_chance` : Probability for weight perturbation.
@@ -171,20 +171,12 @@ If any probability or `max_attempts` is `missing`, the value is loaded from the 
 - `max_attempts` : Max trials for adding a connection.
 """
 function mutate(genome::Genome;
-    perturb_chance::Union{Float64,Missing}=missing,
-    sigma::Union{Float64,Missing}=missing,
-    add_connection_prob::Union{Float64,Missing}=missing,
-    node_add_prob::Union{Float64,Missing}=missing,
-    max_attempts::Union{Int,Missing}=missing,
+    perturb_chance::Float64=get_config()["mutation"]["perturb_chance"],
+    sigma::Float64=get_config()["mutation"]["sigma"],
+    add_connection_prob::Float64=get_config()["mutation"]["add_connection_prob"],
+    node_add_prob::Float64=get_config()["mutation"]["node_add_prob"],
+    max_attempts::Int=get_config()["mutation"]["max_attempts"],
 )
-    conf = get_config()
-    m = conf["mutation"]
-    perturb_chance      = coalesce(perturb_chance,      m["perturb_chance"])
-    sigma               = coalesce(sigma,               m["sigma"])
-    add_connection_prob = coalesce(add_connection_prob, m["add_connection_prob"])
-    node_add_prob       = coalesce(node_add_prob,       m["node_add_prob"])
-    max_attempts        = coalesce(max_attempts,        m["max_attempts"])
-
     mutate_weights!(genome; perturb_chance=perturb_chance, sigma=sigma)
 
     if rand() < add_connection_prob

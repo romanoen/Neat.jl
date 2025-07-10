@@ -37,16 +37,13 @@ A more positive return value indicates better performance (lower overall error).
 # Keyword Arguments
 - `genome` : The `Genome` whose network will be evaluated.
 - `ds_name` : Optional name of the dataset to use (e.g., `"XOR_DATA"` or `"PARITY3_DATA"`).
-              If `missing`, the default `training_data` key from the configuration is used.
+              If not defined, the default `training_data` key from the configuration is used.
 
 # Returns
 - `Float64` : Negative sum of squared errors over all input–target pairs in the dataset.
 """
-function evaluate_fitness(genome::Genome; ds_name::Union{String,Missing}=missing)::Float64
-    conf = get_config()
+function evaluate_fitness(genome::Genome; ds_name::String=get_config()["data"]["training_data"])::Float64
     total_error = 0.0
-    m = conf["data"]
-    ds_name   = coalesce(ds_name, m["training_data"])
 
     ds = getfield(Fitness, Symbol(ds_name))
 

@@ -16,85 +16,78 @@ using ..Visualize: plot_fitness_history
 export train
 
 """
-    train(; pop_size::Union{Int,Missing}=missing,
-            n_generations::Union{Int,Missing}=missing,
-            input_size::Union{Int,Missing}=missing,
-            output_size::Union{Int,Missing}=missing,
-            speciation_threshold::Union{Float64,Missing}=missing,
-            elite_frac::Union{Float64,Missing}=missing,
-            perturb_chance::Union{Float64,Missing}=missing,
-            sigma::Union{Float64,Missing}=missing,
-            add_connection_prob::Union{Float64,Missing}=missing,
-            node_add_prob::Union{Float64,Missing}=missing,
-            max_attempts::Union{Int,Missing}=missing,
-            c1::Union{Float64,Missing}=missing,
-            c2::Union{Float64,Missing}=missing,
-            c3::Union{Float64,Missing}=missing,
-            ds_name::Union{String,Missing}=missing) -> (Vector{Genome}, Vector{Float64})
+    train(; pop_size::Int = get_config()["train_param"]["pop_size"],
+            n_generations::Int = get_config()["train_param"]["n_generations"],
+            input_size::Int = get_config()["train_param"]["input_size"],
+            output_size::Int = get_config()["train_param"]["output_size"],
+            speciation_threshold::Float64 = get_config()["train_param"]["speciation_threshold"],
+            elite_frac::Float64 = get_config()["train_param"]["elite_frac"],
+            perturb_chance::Float64 = get_config()["mutation"]["perturb_chance"],
+            sigma::Float64 = get_config()["mutation"]["sigma"],
+            add_connection_prob::Float64 = get_config()["mutation"]["add_connection_prob"],
+            node_add_prob::Float64 = get_config()["mutation"]["node_add_prob"],
+            max_attempts::Int = get_config()["mutation"]["max_attempts"],
+            c1::Float64 = get_config()["speciation"]["c1"],
+            c2::Float64 = get_config()["speciation"]["c2"],
+            c3::Float64 = get_config()["speciation"]["c3"],
+            ds_name::String = get_config()["data"]["training_data"]) -> (Vector{Genome}, Vector{Float64})
 
-Run the full NEAT evolutionary training loop, returning the final population
-and the history of best fitness values per generation.
+Runs the full NEAT evolutionary training loop, returning the final evolved population
+and the history of the best fitness values per generation.
 
-Each keyword argument, if `missing`, is read from the corresponding entry
-in the configuration:
+All keyword arguments are initialized using the values from the configuration file unless explicitly provided.
 
+# Keyword Arguments
 - `pop_size`              : Total number of genomes in each generation.
 - `n_generations`         : Number of generations to evolve.
 - `input_size`            : Number of input neurons in each genome.
 - `output_size`           : Number of output neurons.
-- `speciation_threshold`  : Compatibility distance threshold for specie assignment.
-- `elite_frac`            : Fraction of each species preserved as elites.
-- `perturb_chance`        : Probability of small weight perturbation.
-- `sigma`                 : Standard deviation of weight perturbation.
-- `add_connection_prob`   : Chance to attempt adding a new connection.
-- `node_add_prob`         : Chance to attempt adding a new node.
-- `max_attempts`          : Max trials when adding a connection.
-- `c1`, `c2`, `c3`         : Coefficients for excess, disjoint, and weight‐difference terms in compatibility distance.
-- `ds_name`               : Optional name of the training dataset (e.g., `"XOR_DATA"` or `"PARITY3_DATA"`).
+- `speciation_threshold`  : Compatibility distance threshold for species assignment.
+- `elite_frac`            : Fraction of top genomes preserved as elites within each species.
+- `perturb_chance`        : Probability of applying small mutations to connection weights.
+- `sigma`                 : Standard deviation used for small weight perturbations.
+- `add_connection_prob`   : Probability of attempting to add a new connection.
+- `node_add_prob`         : Probability of attempting to add a new node.
+- `max_attempts`          : Maximum number of attempts when trying to add a connection.
+- `c1`, `c2`, `c3`        : Coefficients for excess, disjoint, and weight-difference terms in compatibility distance calculations.
+- `ds_name`               : Name of the training dataset (e.g., `"XOR_DATA"` or `"PARITY3_DATA"`).
 
 # Behavior
 
-1. Initializes a population with `pop_size` genomes.
+1. Initializes a population with `pop_size` genomes, each fully connected from input to output nodes.
 2. For each generation:
-   - Evaluates raw fitness via `evaluate_fitness`.
+   - Evaluates raw fitness using `evaluate_fitness`.
    - Records the highest fitness in `best_fitness_history`.
-   - Performs speciation, fitness sharing, and offspring allocation.
-   - Produces a new population by crossover and mutation.
-3. After evolving, re-evaluates final fitnesses.
-4. Generates and saves a plot of the best‐fitness trajectory to `"fitness.png"`.
+   - Groups genomes into species based on compatibility distances.
+   - Applies fitness sharing and selects elites for each species.
+   - Allocates offspring based on adjusted fitness.
+   - Generates offspring through crossover and mutation.
+3. Re-evaluates the final population's fitness after evolution.
+4. Plots and saves the trajectory of best fitness per generation to `"fitness.png"`.
 
 # Returns
-- `population`           : Vector of `Genome` instances after final generation.
-- `best_fitness_history` : Vector of the best fitness value from each generation.
+- `population`           : Vector of `Genome` objects representing the final generation.
+- `best_fitness_history` : Vector containing the highest fitness value from each generation.
 """
+
 function train(
     ;
-    pop_size::Union{Int,Missing}=missing,
-    n_generations::Union{Int,Missing}=missing,
-    input_size::Union{Int,Missing}=missing,
-    output_size::Union{Int,Missing}=missing,
-    speciation_threshold::Union{Float64,Missing}=missing,
-    elite_frac::Union{Float64,Missing}=missing,
-    perturb_chance::Union{Float64,Missing}=missing,
-    sigma::Union{Float64,Missing}=missing,
-    add_connection_prob::Union{Float64,Missing}=missing,
-    node_add_prob::Union{Float64,Missing}=missing,
-    max_attempts::Union{Int,Missing}=missing,
-    c1::Union{Float64,Missing}=missing,
-    c2::Union{Float64,Missing}=missing,
-    c3::Union{Float64,Missing}=missing,
-    ds_name::Union{String,Missing}=missing
+    pop_size::Int                  = get_config()["train_param"]["pop_size"],
+    n_generations::Int             = get_config()["train_param"]["n_generations"],
+    input_size::Int                = get_config()["train_param"]["input_size"],
+    output_size::Int               = get_config()["train_param"]["output_size"],
+    speciation_threshold::Float64  = get_config()["train_param"]["speciation_threshold"],
+    elite_frac::Float64            = get_config()["train_param"]["elite_frac"],
+    perturb_chance::Float64        = get_config()["mutation"]["perturb_chance"],
+    sigma::Float64                 = get_config()["mutation"]["sigma"],
+    add_connection_prob::Float64   = get_config()["mutation"]["add_connection_prob"],
+    node_add_prob::Float64         = get_config()["mutation"]["node_add_prob"],
+    max_attempts::Int              = get_config()["mutation"]["max_attempts"],
+    c1::Float64                     = get_config()["speciation"]["c1"],
+    c2::Float64                     = get_config()["speciation"]["c2"],
+    c3::Float64                     = get_config()["speciation"]["c3"],
+    ds_name::String                = get_config()["data"]["training_data"],
 )
-
-    conf = get_config()
-
-    pop_size              = coalesce(pop_size,              conf["train_param"]["pop_size"])
-    n_generations         = coalesce(n_generations,         conf["train_param"]["n_generations"])
-    input_size            = coalesce(input_size,            conf["train_param"]["input_size"])
-    output_size           = coalesce(output_size,           conf["train_param"]["output_size"])
-    speciation_threshold  = coalesce(speciation_threshold,  conf["train_param"]["speciation_threshold"])
-    elite_frac            = coalesce(elite_frac,            conf["train_param"]["elite_frac"])
-
     # Initialize the population
     population = initialize_population(pop_size, input_size, output_size)
     best_fitness_history = Float64[]
