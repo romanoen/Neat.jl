@@ -11,6 +11,7 @@ using ..Population
 using ..Speciation
 using ..Mutation: mutate
 using ..Crossover: crossover
+using ..Visualize: plot_fitness_history
 
 export train
 
@@ -148,12 +149,7 @@ function train(
         genome.fitness = evaluate_fitness(genome, ds_name = ds_name)
     end
 
-    p = plot(best_fitness_history;
-             xlabel="Generation",
-             ylabel="Best Fitness",
-             title="Evolution of Best Genome Fitness",
-             legend=false)
-    savefig(p, "fitness.png")
+    plot_fitness_history(best_fitness_history; filename="fitness_history.png")
 
     return population, best_fitness_history
 end
