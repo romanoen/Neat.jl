@@ -54,7 +54,7 @@ This package defines the building blocks of the NEAT algorithm:
 
 ## Getting Started
 
-📘 [Getting Started Guide](docs/getting_started.md)
+📘 [Getting Started Guide](docs/src/getting_started.md)
 
 ## Documentation
 
