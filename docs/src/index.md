@@ -24,5 +24,6 @@ Modules = [
   Neat.Speciation,
   Neat.Innovation,
   Neat.NeatTrain
+  Neat.Visualize
 ]
 ```
