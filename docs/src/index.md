@@ -23,6 +23,7 @@ Modules = [
   Neat.Crossover,
   Neat.Speciation,
   Neat.Innovation,
-  Neat.NeatTrain
+  Neat.NeatTrain,
+  Neat.Visualize
 ]
 ```

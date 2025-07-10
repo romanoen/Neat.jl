@@ -89,7 +89,6 @@ function crossover(parent1::Genome, parent2::Genome)::Genome
         _ = ForwardPass.topological_sort(genome_try)
         return genome_try
     catch ex
-        @warn "crossover: child contains cycles; crossover aborted" exception = ex
         return parent1
     end
 end

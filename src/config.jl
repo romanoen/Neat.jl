@@ -30,7 +30,8 @@ const DEFAULT_CONFIG = Dict(
         "node_add_prob"         => 0.03,
         "add_connection_prob"   => 0.3,
         "sigma"                 => 0.06,
-        "perturb_chance"        => 0.96
+        "perturb_chance"        => 0.96,
+        "max_attempts"          => 50
     ),
     "crossover" => Dict(
         "dummy"           => true
@@ -70,7 +71,7 @@ function load_config()
         end
         @info "NeatConfig: Default configuration written to $(toml_path)"
     else
-        print("Setting up parameters from neat_config.toml")
+        #print("Setting up parameters from neat_config.toml")
     end
     return TOML.parsefile(toml_path)
 end

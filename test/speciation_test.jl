@@ -24,7 +24,7 @@ end
         end
 
         species_list = Vector{Vector{Genome}}()
-        assign_species!(pop, species_list; threshold=3.0)
+        assign_species!(pop, species_list; speciation_threshold=3.0)
 
         @test sum(length.(species_list)) == length(pop)
         @test all(length(s) > 0 for s in species_list)

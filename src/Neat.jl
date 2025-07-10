@@ -11,6 +11,7 @@ include("create_population.jl")
 include("mutation.jl")
 include("crossover.jl")
 include("speciation.jl")
+include("visualize.jl")
 include("training.jl")
 
 using .NeatConfig 
@@ -24,6 +25,7 @@ using .Mutation
 using .Crossover
 using .Speciation
 using .NeatTrain
+using .Visualize
 
 export Genome,
     Node,
@@ -43,5 +45,7 @@ export Genome,
     select_elites,
     next_genome_id,
     get_config,
-    train
+    train,
+    plot_fitness_history
+
 end # module
