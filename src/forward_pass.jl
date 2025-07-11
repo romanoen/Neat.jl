@@ -17,8 +17,9 @@ Performs a forward pass through the network defined by `genome`, computing activ
 - `Dict{Int, Float64}`: A dictionary mapping each node ID to its activation value.
 """
 function forward_pass(genome::Genome, input::Vector{Float64})::Dict{Int, Float64}
-    # Determine evaluation order via topological sorting
-    sorted_nodes = topological_sort(genome)
+    # Determine evaluation order via topological sorting and get enabled_conns
+    sorted_nodes, enabled_conns = topological_sort(genome)
+
 
     # Identify and sort input nodes to align with provided input vector
     input_nodes = sort([n.id for n in values(genome.nodes) if n.nodetype == :input])
@@ -31,8 +32,6 @@ function forward_pass(genome::Genome, input::Vector{Float64})::Dict{Int, Float64
         activations[nid] = input[i]
     end
 
-    # Gather enabled connections
-    enabled_conns = [c for c in values(genome.connections) if c.enabled]
 
     # Compute activations for non-input nodes
     for node in sorted_nodes
@@ -67,6 +66,7 @@ The resulting order ensures each node appears only after all its predecessors ha
 
 # Returns
 - `Vector{Int}`: A list of node IDs in a valid computation order.
+- `Vector{Connection}`: A list of all enabled connections in the genome.
 
 # Errors
 - Throws an error if the graph contains cycles, making topological sorting impossible.
@@ -109,7 +109,7 @@ function topological_sort(genome::Genome)
         error("Graph contains cycles! Topological sort not possible.")
     end
 
-    return order
+    return order, enabled_conns
 end
 
 end # module ForwardPass

@@ -86,7 +86,7 @@ function crossover(parent1::Genome, parent2::Genome)
     # global cycle check
     try
         genome_try = Genome(next_genome_id(), child_nodes, child_connections, 0.0, 0.0)
-        _ = ForwardPass.topological_sort(genome_try)
+        _,_ = ForwardPass.topological_sort(genome_try)
         return genome_try
     catch ex
         return parent1
