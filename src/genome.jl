@@ -15,7 +15,7 @@ end
 # - weight: strength of the conection
 # - enabled: flag if active
 # - innovation_number: unique ID for tracking mutations
-mutable struct Connection
+struct Connection
     in_node::Int
     out_node::Int
     weight::Float64

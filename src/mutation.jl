@@ -10,7 +10,7 @@ export mutate_weights!, mutate, add_connection!, add_node!, causes_cycle
 """
     mutate_weights!(genome::Genome; perturb_chance::Float64, sigma::Float64) -> Nothing
 
-Apply weight mutations to all connections of `genome` in-place.
+Apply weight mutations to all connections of `genome` by replacing each with a new modified connection.
 
 - With probability `perturb_chance`, add a perturbation drawn from `Normal(0, sigma)`.
 - Otherwise, assign a completely new weight sampled from `Normal(0, 1)`.
@@ -21,12 +21,14 @@ Apply weight mutations to all connections of `genome` in-place.
 - `sigma` : Standard deviation of the Gaussian perturbation.
 """
 function mutate_weights!(genome::Genome; perturb_chance::Float64, sigma::Float64)
-    for conn in values(genome.connections)
-        if rand() < perturb_chance
-            conn.weight += randn() * sigma
-        else
-            conn.weight = randn()
-        end
+    for key in keys(genome.connections)
+        conn = genome.connections[key]
+        new_weight = rand() < perturb_chance ? conn.weight + randn() * sigma : randn()
+        genome.connections[key] = Connection(
+            conn.in_node, conn.out_node,
+            new_weight, conn.enabled,
+            conn.innovation_number
+        )
     end
 end
 
