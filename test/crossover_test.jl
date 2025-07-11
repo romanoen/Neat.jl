@@ -20,7 +20,7 @@ using Neat
     conn3p2 = Connection(1, 4, 0.5, true, 3)   # disjoint/excess
     p2 = Genome(2, copy(nodes), Dict((2, 3)=>conn2p2, (1, 4)=>conn3p2), -1.0, 0.0)
 
-    child = crossover(p1, p2)
+    child = crossover(p1, p2,0.75)
 
     @test isa(child, Genome)
     @test length(child.nodes) ≥ 3
