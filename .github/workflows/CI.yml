@@ -53,15 +53,15 @@ jobs:
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
-          # files: lcov.info               # nur nötig, falls du ein anderes Format nutzt
-          # token: ${{ secrets.CODECOV_TOKEN }}  # nur für private Repos/Enterprise
+          # files: lcov.info     
+          token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false
 
   docs:
     name: Documentation
     runs-on: ubuntu-latest
     permissions:
-      actions: write    # nötig für Cache-Cleanup
+      actions: write 
       contents: write
       statuses: write
 
