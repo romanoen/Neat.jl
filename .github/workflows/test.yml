@@ -20,6 +20,7 @@ jobs:
 
       - name: Generate LCOV file
         run: |
+          mkdir -p coverage
           julia --project=. -e 'using Coverage; LCOV.writefile("coverage/lcov.info", process_folder())'
 
       - name: Upload coverage to Codecov
