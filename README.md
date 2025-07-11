@@ -51,9 +51,6 @@ This package defines the building blocks of the NEAT algorithm:
  
 - **Visualizer**
   - Provides functions to visualize the evolutionary progress and internal structure of genomes in NEAT. It includes plotting fitness distributions, genome complexity, individual genome architectures, and animating genome evolution over generations.
- 
-  - **Codecov Coverage**
-  - [![codecov](https://codecov.io/github/MusaOzcetin/Neat.jl/graph/badge.svg?token=8125DLERDL)](https://codecov.io/github/MusaOzcetin/Neat.jl)
 
 ## Getting Started
 
