@@ -1,19 +1,27 @@
-name: API workflow
+name: Coverage Workflow
 
 on: [push, pull_request]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Test python API
+    name: Run Tests and Upload Coverage
     steps:
       - uses: actions/checkout@v4
-      - name: Install requirements
-        run: pip install -r requirements.txt
-      - name: Run tests and collect coverage
-        run: pytest --cov .
-      - name: Upload coverage reports to Codecov
+
+      - name: Set up Julia
+        uses: julia-actions/setup-julia@v1
+        with:
+          version: "1.11"
+
+      - name: Install dependencies and test with coverage
         run: |
-          curl -Os https://cli.codecov.io/latest/macos/codecov
-          chmod +x codecov
-          ./codecov --verbose upload-process --fail-on-error -t ${{ secrets.CODECOV_TOKEN }} -n 'service'-${{ github.run_id }} -F service -f coverage-service.xml
+          julia --project=. -e 'using Pkg; Pkg.add("Coverage"); Pkg.test(coverage=true)'
+
+      - name: Generate LCOV file
+        run: |
+          julia --project=. -e 'using Coverage; LCOV.writefile("coverage/lcov.info", process_folder())'
+
+      - name: Upload coverage to Codecov
+        run: |
+          bash <(curl -s https://codecov.io/bash) -f coverage/lcov.info -t ${{ secrets.CODECOV_TOKEN }} -F julia -n julia-${{ github.run_id }}
