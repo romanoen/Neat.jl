@@ -2,7 +2,7 @@ module Visualize
 
 using Plots
 using ..Types: Genome
-using Graphs, GraphRecipes, Plots
+using Plots
 
 export plot_fitness_history
 

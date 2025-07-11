@@ -13,8 +13,6 @@ TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 
 [compat]
 CSV = "0.10"
-GraphRecipes = "0.5.14"
-Graphs = "1.13.0"
 Plots = "1.40.13"
 Random = "1.11.0"
 TOML = "1.0.3"
