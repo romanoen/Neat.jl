@@ -4,6 +4,7 @@ using ..Types
 using ..ForwardPass
 using Random
 using ..CreateGenome: next_genome_id
+using ..NeatConfig
 
 export crossover
 
@@ -22,7 +23,7 @@ Disabled genes may remain disabled in the child.
 # Returns
 - `Genome`: A new child genome composed from both parents' genes.
 """
-function crossover(parent1::Genome, parent2::Genome)
+function crossover(parent1::Genome, parent2::Genome,disable_chance::Float64=get_config()["crossover"]["disable_chance"])
     # Ensure parent1 is the fitter (or equal fitness: keep order)
     if parent2.fitness > parent1.fitness
         parent1, parent2 = parent2, parent1
@@ -50,7 +51,7 @@ function crossover(parent1::Genome, parent2::Genome)
             selected = rand(Bool) ? conn1 : conn2
 
             # If either is disabled, 75% chance to remain disabled
-            enabled = (!conn1.enabled || !conn2.enabled) ? (rand() > 0.75) : selected.enabled
+            enabled = (!conn1.enabled || !conn2.enabled) ? (rand() > disable_chance) : selected.enabled
 
             inherited_conn = Connection(
                 selected.in_node,

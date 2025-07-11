@@ -34,7 +34,8 @@ const DEFAULT_CONFIG = Dict(
         "max_attempts"          => 50
     ),
     "crossover" => Dict(
-        "dummy"           => true
+        "dummy"           => true,
+        "disable_chance" => 0.75, 
     ),
     "speciation"  => Dict(
         "c1"      => 0.5,
