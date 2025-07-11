@@ -138,7 +138,8 @@ function add_node!(genome::Genome)
     )
 
     # Create new node
-    new_node_id = maximum(collect(keys(genome.nodes))) + 1
+    new_node_id = maximum(keys(genome.nodes)) + 1
+
     genome.nodes[new_node_id] = Node(new_node_id, :hidden)
 
     # Add connection A → C
