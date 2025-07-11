@@ -26,7 +26,7 @@ NO HIDDEN NODES ARE CREATED INITIALLY
 # Returns
 - `Genome`: A new genome with nodes and fully connected input-output links.
 """
-function create_genome(num_inputs::Int, num_outputs::Int)::Genome
+function create_genome(num_inputs::Int, num_outputs::Int)
     nodes = Dict{Int, Node}()
     connections = Dict{Tuple{Int, Int}, Connection}()
 

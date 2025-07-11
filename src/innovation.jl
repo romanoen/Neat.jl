@@ -17,7 +17,7 @@ Used in NEAT to track structural mutations consistently across genomes.
 # Returns
 - `Int`: The innovation number for the (in_node, out_node) pair.
 """
-function get_innovation_number(in_node::Int, out_node::Int)::Int
+function get_innovation_number(in_node::Int, out_node::Int)
     key = (in_node, out_node)
     return get!(connection_innovations, key) do
         v = innovation_counter[]

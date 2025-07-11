@@ -38,7 +38,7 @@ function compatibility_distance(g1::Genome, g2::Genome;
     c1::Float64                  = get_config()["speciation"]["c1"],
     c2::Float64                  = get_config()["speciation"]["c2"],
     c3::Float64                  = get_config()["speciation"]["c3"],
-    )::Float64
+    )
 
 
     # Build lookup tables for connections in each genome
@@ -175,7 +175,7 @@ Allocate the total number of offspring among species proportionally to their tot
 # Returns
 - A vector of integers indicating the offspring count for each species (in the same order).
 """
-function compute_offspring_counts(species_list::Vector{Vector{Genome}}, population_size::Int=300)::Vector{Int}
+function compute_offspring_counts(species_list::Vector{Vector{Genome}}, population_size::Int=300)
     species_fitness_totals = [sum(g.adjusted_fitness for g in s) for s in species_list]
     total_adjusted = sum(species_fitness_totals)
 

@@ -71,7 +71,7 @@ The resulting order ensures each node appears only after all its predecessors ha
 # Errors
 - Throws an error if the graph contains cycles, making topological sorting impossible.
 """
-function topological_sort(genome::Genome)::Vector{Int}
+function topological_sort(genome::Genome)
     # All node IDs
     nodes = collect(keys(genome.nodes))
     # Only consider enabled connections
