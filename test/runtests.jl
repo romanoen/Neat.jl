@@ -11,6 +11,6 @@ using Test
         include("create_population_test.jl")
         include("mutation_test.jl")
         include("visualize_test.jl")
-        # include("training_test.jl")
+        include("training_test.jl")
 end
 

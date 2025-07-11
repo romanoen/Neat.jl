@@ -1,6 +1,6 @@
 using Test
-using NeatTrain
-using Types: Genome
+using Neat.NeatTrain: train
+using Neat.Types: Genome
 
 @testset "NeatTrain.train tests" begin
     # Test zero generations: should return initial population and empty history
