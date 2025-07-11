@@ -2,11 +2,11 @@
 module Neat
 
 include("config.jl")
-include("fitness.jl")
 include("genome.jl")
 include("innovation.jl")
 include("create_genome.jl")
 include("forward_pass.jl")
+include("fitness.jl")
 include("create_population.jl")
 include("mutation.jl")
 include("crossover.jl")

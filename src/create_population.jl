@@ -19,9 +19,9 @@ Each genome is assigned a unique ID.
 # Returns
 - A vector of `Genome` objects.
 """
-function initialize_population(n::Int, num_inputs::Int, num_outputs::Int)
-    population = Vector{Genome}(undef, n)
-    for i in 1:n
+function initialize_population(num_genomes::Int, num_inputs::Int, num_outputs::Int)
+    population = Vector{Genome}(undef, num_genomes)
+    for i in 1:num_genomes
         population[i] = create_genome(num_inputs, num_outputs)
     end
     return population
