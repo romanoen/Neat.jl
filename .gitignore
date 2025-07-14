@@ -2,7 +2,6 @@
 *.jl.cov
 *.jl.mem
 .vscode
-/Manifest*.toml
 /docs/Manifest*.toml
 /docs/build/
 neat_config.toml
@@ -10,3 +9,4 @@ fitness.png
 population_structure.png
 fitness_history.png
 .DS_Store
+best_genome.png
