@@ -34,7 +34,7 @@ end
         (2, 1) => Connection(2, 1, -0.5, false)  # disabled connection
     )
     genome = Genome(nodes, connections)
-    gen_file = "test_genome.png"
+    gen_file = "best_genome.png"
     # Generate visualization
     visualize_genome(genome; filename=gen_file, width=100, height=100)
     @test isfile(gen_file)

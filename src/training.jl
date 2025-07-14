@@ -148,6 +148,8 @@ function train(
 
     visualize_genome(best_genome)
 
+    return population, best_fitness_history
+
 end
 
 end  # module NeatTrain
