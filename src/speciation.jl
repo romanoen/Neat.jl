@@ -175,15 +175,15 @@ Allocate the total number of offspring among species proportionally to their tot
 # Returns
 - A vector of integers indicating the offspring count for each species (in the same order).
 """
-function compute_offspring_counts(species_list::Vector{Vector{Genome}}, population_size::Int=300)
+function compute_offspring_counts(species_list::Vector{Vector{Genome}}, population_size::Int=300)        # Fixe größe von 300, nicht so gut
     species_fitness_totals = [sum(g.adjusted_fitness for g in s) for s in species_list]
     total_adjusted = sum(species_fitness_totals)
 
     if total_adjusted == 0
-        return fill(div(population_size, length(species_list)), length(species_list))
-    end
+        return fill(div(population_size, length(species_list)), length(species_list))                    # wenn wir keine fitness haben (Was nicht vorkommen sollte)
+    end                                                                                                  # dann kriegt jede spezies gleichviel
 
-    counts = [ round(Int, (fit / total_adjusted) * population_size)
+    counts = [ round(Int, (fit / total_adjusted) * population_size)                                      # sonst je spezies die aggregierte fitness / die gesamte fitness * die population also 300
                for fit in species_fitness_totals ]
 
     # Correct rounding errors
@@ -209,9 +209,9 @@ Select the top-performing genomes in a species based on adjusted fitness.
 - A vector of the top `ceil(elite_frac * length(species))` genomes, sorted by descending `adjusted_fitness`.
 """
 function select_elites(species::Vector{T}, elite_frac::Float64) where {T}
-    num_elites = max(1, ceil(Int, elite_frac * length(species)))
-    sorted = sort(species, by = g -> g.adjusted_fitness, rev = true)
-    return sorted[1:num_elites]
+    num_elites = max(1, ceil(Int, elite_frac * length(species)))                    # ma schaut wieviele genome dürfen sich fortpflanzen
+    sorted = sort(species, by = g -> g.adjusted_fitness, rev = true)                # sortiert dann die genome innerhalb der spezies 
+    return sorted[1:num_elites]                                                    # und gibt die n besten zurück
 end
 
 export select_elites
