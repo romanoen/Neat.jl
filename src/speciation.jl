@@ -34,7 +34,7 @@ If any of `c1`, `c2`, or `c3` is not defined, its value is loaded from the speci
 # Returns
 - `Float64` : The compatibility distance (lower means more similar).
 """
-function compatibility_distance(g1::Genome, g2::Genome;
+function compatibility_distance(g1::Genome, g2::Genome;                        # wir können immer nur die distanz zwischen 2 genomen berechnen
     c1::Float64                  = get_config()["speciation"]["c1"],
     c2::Float64                  = get_config()["speciation"]["c2"],
     c3::Float64                  = get_config()["speciation"]["c3"],
@@ -42,16 +42,16 @@ function compatibility_distance(g1::Genome, g2::Genome;
 
 
     # Build lookup tables for connections in each genome
-    conns1 = Dict(c.innovation_number => c for c in values(g1.connections))
+    conns1 = Dict(c.innovation_number => c for c in values(g1.connections))        # wieder mal lookup tables für die ganzen connections
     conns2 = Dict(c.innovation_number => c for c in values(g2.connections))
 
     # Collect innovation numbers
-    innovs1 = keys(conns1)
+    innovs1 = keys(conns1)                                                        # alle innovationsnummern
     innovs2 = keys(conns2)
-    all_innovs = union(innovs1, innovs2)
+    all_innovs = union(innovs1, innovs2)                                            # die zusammen gepackt
 
     # Determine the highest innovation number in each genome
-    max_innov1 = isempty(innovs1) ? 0 : maximum(innovs1)
+    max_innov1 = isempty(innovs1) ? 0 : maximum(innovs1)                        # dann schauen wir nach den jeweils höchsten innovationsnummern
     max_innov2 = isempty(innovs2) ? 0 : maximum(innovs2)
 
     # Initialize distance components
@@ -61,28 +61,29 @@ function compatibility_distance(g1::Genome, g2::Genome;
     M = 0       # Count of matching genes
 
     # Iterate through all innovation numbers seen in either genome
-    for innov in all_innovs
-        c1_conn = get(conns1, innov, nothing)
+    for innov in all_innovs                                                    # jetzt schleife: wir schauen uns für jede inno nummmer die connection
+        c1_conn = get(conns1, innov, nothing)                                    # in beiden genen an
         c2_conn = get(conns2, innov, nothing)
 
-        if c1_conn !== nothing && c2_conn !== nothing
+        if c1_conn !== nothing && c2_conn !== nothing                            # wenns bei beiden genomen die connection gibt
             # Matching gene
-            W += abs(c1_conn.weight - c2_conn.weight)
+            W += abs(c1_conn.weight - c2_conn.weight)                            # berechnen wir den gewicht unterschied
             M += 1
-        elseif innov <= max_innov1 && innov <= max_innov2
+        elseif innov <= max_innov1 && innov <= max_innov2                        # wenn nur bei einem und die innov nummer kleiner als die maxima sind ist es disjoint
             # Disjoint gene
             D += 1
         else
             # Excess gene
-            E += 1
+            E += 1                                                                   # sonst excess
         end
     end
 
     # Compute average weight difference
-    avg_weight_diff = M > 0 ? W / M : 0.0
+    avg_weight_diff = M > 0 ? W / M : 0.0                                       # hier rechnen wir die durchschnittlichen gewichtsunterschiede aus indem 
+                                                                                # wir den gesamtgewichtsunterschied durch die anzahl der gleichen Connections teilen
 
     # Normalize by the size of the larger genome
-    N = max(length(conns1), length(conns2))
+    N = max(length(conns1), length(conns2))                                       # wir schauen nach der maximalen anzahl der connections aus beiden genomen und nehmen das für die formel
     N = N < 20 ? 1 : N
 
     return (c1 * E / N) + (c2 * D / N) + (c3 * avg_weight_diff)
