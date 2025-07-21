@@ -1,0 +1,28 @@
+name: Coverage Workflow
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Run Tests and Upload Coverage
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Julia
+        uses: julia-actions/setup-julia@v1
+        with:
+          version: "1.11"
+
+      - name: Install dependencies and test with coverage
+        run: |
+          julia --project=. -e 'using Pkg; Pkg.add("Coverage"); Pkg.test(coverage=true)'
+
+      - name: Generate LCOV file
+        run: |
+          mkdir -p coverage
+          julia --project=. -e 'using Coverage; LCOV.writefile("coverage/lcov.info", process_folder())'
+
+      - name: Upload coverage to Codecov
+        run: |
+          bash <(curl -s https://codecov.io/bash) -f coverage/lcov.info -t ${{ secrets.CODECOV_TOKEN }} -F julia -n julia-${{ github.run_id }}
