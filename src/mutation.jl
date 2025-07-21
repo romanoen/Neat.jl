@@ -20,11 +20,11 @@ Apply weight mutations to all connections of `genome` by replacing each with a n
 - `perturb_chance` : Probability of choosing a small perturbation over full replacement.
 - `sigma` : Standard deviation of the Gaussian perturbation.
 """
-function mutate_weights!(genome::Genome; perturb_chance::Float64, sigma::Float64)
+function mutate_weights!(genome::Genome; perturb_chance::Float64, sigma::Float64) # Im Endeffekt super easy perturb macht ein komplettes Gewicht und sigma ändert das gewicht ein bisschen und zwar für alle Connections innerhalb eines Genoms
     for key in keys(genome.connections)
         conn = genome.connections[key]
         new_weight = rand() < perturb_chance ? conn.weight + randn() * sigma : randn()
-        genome.connections[key] = Connection(
+        genome.connections[key] = Connection(                                    # Anscheinend effizienter eine neue Connection zuzuweisen
             conn.in_node, conn.out_node,
             new_weight, conn.enabled,
             conn.innovation_number
@@ -47,21 +47,21 @@ Performs a depth-first search starting from `dst_id` to see if `src_id` is reach
 # Returns
 - `true` if a path exists from `dst_id` back to `src_id` (a cycle would form), otherwise `false`.
 """
-function causes_cycle(genome::Genome, src_id::Int, dst_id::Int)::Bool
-    visited = Set{Int}()
-    stack = [dst_id]
+function causes_cycle(genome::Genome, src_id::Int, dst_id::Int)::Bool # man startet bei dst_id 
+    visited = Set{Int}()                                              # der Stack mit den ganzen visited Nodes
+    stack = [dst_id]                                                 # enthält alle knoten die wir noch besuchen wollen
 
     while !isempty(stack)
         current = pop!(stack)
-        if current == src_id
+        if current == src_id                                        # wenn der startknoten gefunden ist, dann gibts nen cycle
             return true
         end
-        if current in visited
+        if current in visited                                        # wir müssen verhindern dass knoten doppelt in stack sind
             continue
         end
-        push!(visited, current)
-        for (_, conn) in genome.connections
-            if conn.enabled && conn.in_node == current
+        push!(visited, current)                                    # wir fügen den current node hinzu zu visited
+        for (_, conn) in genome.connections                        
+            if conn.enabled && conn.in_node == current            # in dieser schleife fügen wir dann alle nodes hinzu, die von current aus zu erreichen sind (Tiefensuche) 
                 push!(stack, conn.out_node)
             end
         end
@@ -80,11 +80,11 @@ Selects random input and output nodes (skipping invalid or existing edges) until
 - `max_attempts` : Maximum number of trials before giving up (default: 50).
 """
 function add_connection!(genome::Genome; max_attempts::Int)
-    nodes = collect(values(genome.nodes))
+    nodes = collect(values(genome.nodes))                                                            # wir schauen uns alle nodes an
     attempts = 0
 
     while attempts < max_attempts
-        in_node = rand(nodes)
+        in_node = rand(nodes)                                                                      # wählen zufällig einen input und output node
         out_node = rand(nodes)
 
         if in_node.id == out_node.id || in_node.nodetype == :output || out_node.nodetype == :input
@@ -92,12 +92,12 @@ function add_connection!(genome::Genome; max_attempts::Int)
         end
 
         key = (in_node.id, out_node.id)
-        if haskey(genome.connections, key) || causes_cycle(genome, in_node.id, out_node.id)
+        if haskey(genome.connections, key) || causes_cycle(genome, in_node.id, out_node.id) # wenns die connection schon gibt oder wenn sie einen cycle verursachen würde lehnen wir sie ab
             attempts += 1; continue
         end
 
-        innovation_number = get_innovation_number(in_node.id, out_node.id)
-        genome.connections[key] = Connection(
+        innovation_number = get_innovation_number(in_node.id, out_node.id)         # wir holen eine neue innovation number
+        genome.connections[key] = Connection(                                     # und generieren die connection
             in_node.id,
             out_node.id,
             randn(),
@@ -126,10 +126,10 @@ function add_node!(genome::Genome)
     active_connections = [c for c in values(genome.connections) if c.enabled]
     isempty(active_connections) && return nothing
 
-    old_conn = rand(active_connections)
+    old_conn = rand(active_connections)                                        # wir ziehen uns ne random connection
     key = (old_conn.in_node, old_conn.out_node)
 
-    genome.connections[key] = Connection(
+    genome.connections[key] = Connection(                                        # deaktivieren diese
         old_conn.in_node,
         old_conn.out_node,
         old_conn.weight,
@@ -138,18 +138,18 @@ function add_node!(genome::Genome)
     )
 
     # Create new node
-    new_node_id = maximum(keys(genome.nodes)) + 1
+    new_node_id = maximum(keys(genome.nodes)) + 1                        # erzeugen nen neuen node id
 
-    genome.nodes[new_node_id] = Node(new_node_id, :hidden)
+    genome.nodes[new_node_id] = Node(new_node_id, :hidden)                  # hidden node wird erzeugt
 
     # Add connection A → C
-    new_innov1 = get_innovation_number(old_conn.in_node, new_node_id)
+    new_innov1 = get_innovation_number(old_conn.in_node, new_node_id)       # wir bauen die neue connection zu dem neuen Knoten hin 
     genome.connections[(old_conn.in_node, new_node_id)] = Connection(
         old_conn.in_node, new_node_id, 1.0, true, new_innov1
     )
 
     # Add connection C → B
-    new_innov2 = get_innovation_number(new_node_id, old_conn.out_node)
+    new_innov2 = get_innovation_number(new_node_id, old_conn.out_node)     # und vom neuen knoten weg, sodass es sich am ende wieder schließt
     genome.connections[(new_node_id, old_conn.out_node)] = Connection(
         new_node_id, old_conn.out_node, old_conn.weight, true, new_innov2
     )
