@@ -116,25 +116,25 @@ function assign_species!(
 )
 
     empty!(species_list)
-    shuffle!(population)
+    shuffle!(population)                                # wir shuffeln die population einmal durch da es sich hier um einen greedy algorithmus handelt 
 
-    reps = Genome[]  # current representatives
+    reps = Genome[]                                     # Das hier sind Representatives. Diese Repräsentieren eine Spezies
 
-    for g in population
-        if isempty(reps)
+    for g in population                                 # wenn die Liste der Representatives leer ist packen wir direkt den ersten als Representative rein, ausserdem in die Spezies-List (Ja wir behandeln das unterschiedlich, brauchen am Ende aber nur die Spezies Liste) 
+        if isempty(reps)                                # wenn das der fall ist springen wir direkt in die nächste Iteration
             push!(species_list, [g])
             push!(reps, g)
             continue
         end
 
         # Compute distances to each representative
-        dists = [compatibility_distance(g, rep; c1=c1, c2=c2, c3=c3) for rep in reps]
-        idx = argmin(dists)
+        dists = [compatibility_distance(g, rep; c1=c1, c2=c2, c3=c3) for rep in reps]      # wir berechnen für nen neuen Genom die Distanzen zu allen repräsentanten
+        idx = argmin(dists)                                                                # suchen uns den repräsentant mit geringstem abstand
 
-        if dists[idx] <= speciation_threshold
-            push!(species_list[idx], g)
+        if dists[idx] <= speciation_threshold                                              # und schauen ob der im threshold ist
+            push!(species_list[idx], g)                                                    # wenn ja wird er der spezies des Repräsentanten zugewiesen
         else
-            push!(species_list, [g])
+            push!(species_list, [g])                                                        # ansonsten wird er selbst repräsentant
             push!(reps, g)
         end
     end
@@ -154,7 +154,7 @@ Modifies each genome's fitness value in-place by applying NEAT-style fitness sha
 # Side Effects
 - Sets each genome’s `adjusted_fitness` to `fitness / species_size`.
 """
-function adjust_fitness!(species_list::Vector{Vector{Genome}})
+function adjust_fitness!(species_list::Vector{Vector{Genome}})                         # wir teilen nur die fitness jedes genoms durch die anzahl der member in der spezies um zu vermeiden dass manche Spezies zu mächtig werden
     for species in species_list
         s_size = length(species)
         for genome in species
