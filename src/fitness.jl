@@ -48,10 +48,10 @@ function evaluate_fitness(genome::Genome; ds_name::String=get_config()["data"]["
     ds = getfield(Fitness, Symbol(ds_name))
 
     for (x, target) in ds
-        acts = forward_pass(genome, x)
-        output_nodes = [n.id for n in values(genome.nodes) if n.nodetype == :output]
-        output_value = acts[output_nodes[1]]
-        total_error += (output_value - target)^2
+        acts = forward_pass(genome, x)                                                        # wir berechnen die berechneten ergebnisse nach den knoten mit dem forward pass, rückgabe ist ein dict mit den node IDs sowie deren ergebnis
+        output_nodes = [n.id for n in values(genome.nodes) if n.nodetype == :output]            # wir holen uns die ids der output knoten
+        output_value = acts[output_nodes[1]]                                                    # schauen uns an wie hoch der output wert ist des output knotens (ACHTUNG: Mit dieser Implementierung können wir nur einen einzigen Output Knoten nutzen) 
+        total_error += (output_value - target)^2                                                # error berechnet sich durch predicted und target
     end
 
     return -total_error
