@@ -1,5 +1,6 @@
 using Test
-using Neat.Visualize: plot_fitness_history
+using Neat.Visualize: plot_fitness_history, visualize_genome
+using Neat.Types: Genome, Node, Connection
 
 @testset "Visualize.plot_fitness_history tests" begin
     # Test with empty history: should produce a plot and save an empty-line graph
@@ -21,3 +22,21 @@ using Neat.Visualize: plot_fitness_history
     @test series[:y] == sample_hist
     rm(sample_file; force=true)
 end
+
+"""@testset "Visualize.visualize_genome tests" begin
+    # Setup a simple genome with one enabled and one disabled connection
+    nodes = Dict(
+        1 => Node(1, :input),
+        2 => Node(2, :output)
+    )
+    connections = Dict(
+        (1, 2) => Connection(1, 2, 0.5, true),   # enabled connection
+        (2, 1) => Connection(2, 1, -0.5, false)  # disabled connection
+    )
+    genome = Genome(nodes, connections)
+    gen_file = "best_genome.png"
+    # Generate visualization
+    visualize_genome(genome; filename=gen_file, width=100, height=100)
+    @test isfile(gen_file)
+    rm(gen_file; force=true)
+end"""

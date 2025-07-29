@@ -26,6 +26,5 @@ function plot_fitness_history(best_fitness_history::Vector{Float64}; filename::S
     )
     savefig(p, filename)
     return p
-end
 
 end # module Visualize
